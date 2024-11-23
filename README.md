@@ -2,7 +2,7 @@
 
 Đây là project motelroom_management với công nghệ **Spring Boot**.
 
-## Features
+## Đặc Điểm
 
 - Xác minh và phân quyền người dùng
 - Hoạt động CRUD cho phòng và khách thuê
@@ -11,7 +11,7 @@
 
 ---
 
-## Technologies Used
+## Công Nghệ Sử Dụng
 
 - **Spring Boot**: Backend framework
 - **Spring Data JPA**: Database interactions
@@ -22,9 +22,9 @@
 
 ---
 
-## Prerequisites
+## Môi Trường Chạy
 
-Before running the project, ensure you have the following installed:
+Trước khi cài đặt bạn nên cài dặt môi trường theo các link sau:
 
 - [Java 17+](https://www.oracle.com/java/technologies/javase-jdk17-downloads.html)
 - [Maven](https://maven.apache.org/download.cgi)
