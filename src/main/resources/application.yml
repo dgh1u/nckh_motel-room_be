@@ -1,0 +1,21 @@
+spring.application.name: nckh_motel-room_be
+server:
+  port: ${PORT}
+spring:
+  datasource:
+    username: ${USERNAME_DB}
+    password: ${PASSWORD_DB}
+    url: ${URL_DB}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+  main:
+    allow-circular-references: true
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 2MB
+jwt:
+  key: ${JWT_KEY}
