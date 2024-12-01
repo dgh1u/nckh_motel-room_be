@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Collection;
 import java.util.List;
 
 @Getter
@@ -13,12 +14,13 @@ import java.util.List;
 public class Role {
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "role_name")
     private String roleName;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
 //    @JoinColumn(name = "permission_id")
 //    @JoinTable(
 //            name = "role_permissions",
@@ -26,5 +28,5 @@ public class Role {
 //                    name = "role_id", referencedColumnName = "id"),
 //            inverseJoinColumns = @JoinColumn(
 //                    name = "permission_id", referencedColumnName = "id"))
-    List<Permission> permissions;
+    Collection<Permission> permissions;
 }

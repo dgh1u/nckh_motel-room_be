@@ -5,10 +5,6 @@ import lombok.Data;
 
 import java.util.List;
 
-/**
- * @author MinhDV
- */
-
 @Data
 public class BaseListResponse<T> extends BaseResponse {
 
