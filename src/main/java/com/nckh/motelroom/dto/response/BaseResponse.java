@@ -4,12 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
-
-/**
- * @author MinhDV
- */
 
 @Data
 @Builder
@@ -19,16 +16,16 @@ public class BaseResponse {
     private boolean success = false;
     private ErrorResponse error;
 
-    public static <T> BaseItemResponse<T> successData(T data) {
+    public static <T> ResponseEntity<?> successData(T data) {
         BaseItemResponse<T> response = new BaseItemResponse();
         response.setSuccess(data);
-        return response;
+        return ResponseEntity.ok(response);
     }
 
-    public static <T> BaseListResponse<T> successListData(List<T> rows, Integer total) {
+    public static <T> ResponseEntity<?> successListData(List<T> rows, Integer total) {
         BaseListResponse<T> response = new BaseListResponse();
         response.setResult(rows, total);
-        return response;
+        return ResponseEntity.ok(response);
     }
 
     public static <T> BaseResponse error(int code, String msg) {

@@ -7,9 +7,11 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class ErrorDetail {
-    private String id;
-    private String message;
+@AllArgsConstructor
+public class RegisterResponse {
+    private String email;
+    private String fullName;
+    private String address;
+    private String phone;
 }

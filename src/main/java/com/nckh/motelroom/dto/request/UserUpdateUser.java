@@ -10,9 +10,6 @@ public class UserUpdateUser {
     @NotNull
     private Long id;
 
-    @Email(message = Constant.ErrMessageUserValidation.EMAIL_VALIDATE)
-    private String email;
-
     private String fullName;
 
     private String address;

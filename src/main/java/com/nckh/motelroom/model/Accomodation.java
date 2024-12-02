@@ -14,6 +14,7 @@ import org.hibernate.annotations.OnDeleteAction;
 public class Accomodation {
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "acreage")

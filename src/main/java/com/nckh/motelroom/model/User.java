@@ -1,6 +1,7 @@
 package com.nckh.motelroom.model;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,6 +18,7 @@ import java.util.List;
 public class User {
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "address")
@@ -47,7 +49,7 @@ public class User {
     @Column(name = "balance")
     private Double balance;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
 //    @JoinColumn(name = "role_id")
 //    @JoinTable(
 //            name = "user_roles",
@@ -55,7 +57,7 @@ public class User {
 //                    name = "user_id", referencedColumnName = "id"),
 //            inverseJoinColumns = @JoinColumn(
 //                    name = "role_id", referencedColumnName = "id"))
-    private List<Role> roles;
+    private Collection<Role> roles;
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // Mặc định mình sẽ để tất cả là ROLE_USER. Để demo cho đơn giản.

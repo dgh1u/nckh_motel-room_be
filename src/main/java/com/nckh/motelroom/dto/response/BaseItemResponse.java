@@ -2,10 +2,6 @@ package com.nckh.motelroom.dto.response;
 
 import lombok.Data;
 
-/**
- * @author MinhDV
- */
-
 @Data
 public class BaseItemResponse<T> extends BaseResponse {
     private T data;

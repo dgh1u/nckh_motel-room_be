@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class ErrorDetail {
-    private String id;
-    private String message;
+@AllArgsConstructor
+public class LoginResponse {
+    private String fullName;
+    private String token;
 }
