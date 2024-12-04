@@ -36,25 +36,26 @@ public class AuthenticateServiceImp implements AuthenticateService {
 
     private final AuthenticationManager authenticationManager;
     @Override
-    public LoginResponse login(LoginRequest request) {
-        Optional<User> userOptional=userRepository.findByEmail(request.getEmail());
-        if(!userOptional.isPresent()){
-            throw new AuthenticateException("Email hoặc mật khẩu không chính xác");
+        public LoginResponse login(LoginRequest request) {
+            Optional<User> userOptional=userRepository.findByEmail(request.getEmail());
+            if(!userOptional.isPresent()){
+                throw new AuthenticateException("Email hoặc mật khẩu không chính xác");
+            }
+            User user=userOptional.get();
+            if(!passwordEncoder.matches(request.getPassword(),user.getPassword())){
+                throw new AuthenticateException("Email hoặc mật khẩu không chính xác");
+            }
+            if(!user.getBlock()){
+                throw new AuthenticateException("Email hoặc mật khẩu không chính xác");
+            }
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            return LoginResponse.builder()
+                    .fullName(user.getFullName())
+                    .token(jwtConfig.generateToken(user))
+                    .build();
         }
-        User user=userOptional.get();
-        if(!passwordEncoder.matches(request.getPassword(),user.getPassword())){
-            throw new AuthenticateException("Email hoặc mật khẩu không chính xác");
-        }
-        if(!user.getBlock()){
-            throw new AuthenticateException("Email hoặc mật khẩu không chính xác");
-        }
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return LoginResponse.builder()
-                .fullName(user.getFullName())
-                .token(jwtConfig.generateToken(user))
-                .build();
-    }
 
     @Override
     public RegisterResponse register(RegisterRequest request) {
@@ -64,11 +65,11 @@ public class AuthenticateServiceImp implements AuthenticateService {
         }
         User user=new User();
 
-        Optional<Role> roleOptional=roleRepository.findByRoleName("ROLE_USER");
+        Optional<Role> roleOptional=roleRepository.findByRoleName("User");
         Role role;
         if(!roleOptional.isPresent()){
             role=new Role();
-            role.setRoleName("ROLE_USER");
+            role.setRoleName("User");
             roleRepository.save(role);
         }else{
             role=roleOptional.get();

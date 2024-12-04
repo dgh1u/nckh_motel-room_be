@@ -1,7 +1,6 @@
 package com.nckh.motelroom.model;
 
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,9 +15,10 @@ import java.util.List;
 @Entity
 @Table(name = "user")
 public class User {
+
     @Id
-    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
 
     @Column(name = "address")
@@ -50,26 +50,23 @@ public class User {
     private Double balance;
 
     @ManyToMany(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "role_id")
-//    @JoinTable(
-//            name = "user_roles",
-//            joinColumns = @JoinColumn(
-//                    name = "user_id", referencedColumnName = "id"),
-//            inverseJoinColumns = @JoinColumn(
-//                    name = "role_id", referencedColumnName = "id"))
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
+    )
     private Collection<Role> roles;
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Mặc định mình sẽ để tất cả là ROLE_USER. Để demo cho đơn giản.
-        List<SimpleGrantedAuthority> list = new ArrayList<>();
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         if (roles != null) {
             roles.forEach(role -> {
-                list.add(new SimpleGrantedAuthority(role.getRoleName()));
+                authorities.add(new SimpleGrantedAuthority(role.getRoleName()));
                 role.getPermissions().forEach(permission -> {
-                    list.add(new SimpleGrantedAuthority(permission.getPermissionName()));
+                    authorities.add(new SimpleGrantedAuthority(permission.getPermissionName()));
                 });
             });
         }
-        return list;
+        return authorities;
     }
 }
