@@ -1,7 +1,9 @@
 package com.nckh.motelroom.dto.response;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class BaseItemResponse<T> extends BaseResponse {
     private T data;

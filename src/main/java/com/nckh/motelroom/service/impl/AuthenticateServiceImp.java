@@ -77,7 +77,7 @@ public class AuthenticateServiceImp implements AuthenticateService {
         user.setAddress(request.getAddress());
         user.setFullName(request.getFullName());
         user.setEmail(request.getEmail());
-        user.setBlock(false);
+        user.setBlock(true);
         user.setPhone(request.getPhone());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 

@@ -17,13 +17,13 @@ public class BaseResponse {
     private ErrorResponse error;
 
     public static <T> ResponseEntity<?> successData(T data) {
-        BaseItemResponse<T> response = new BaseItemResponse();
+        BaseItemResponse<T> response = new BaseItemResponse<>();
         response.setSuccess(data);
         return ResponseEntity.ok(response);
     }
 
     public static <T> ResponseEntity<?> successListData(List<T> rows, Integer total) {
-        BaseListResponse<T> response = new BaseListResponse();
+        BaseListResponse<T> response = new BaseListResponse<>();
         response.setResult(rows, total);
         return ResponseEntity.ok(response);
     }

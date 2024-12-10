@@ -10,4 +10,6 @@ public interface UserMapper {
     @Mapping(target = "password",ignore = true)
     @Mapping(target = "roles",ignore = true)
     User updateUser(UserUpdateUser user);
+
+
 }
