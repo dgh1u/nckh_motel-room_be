@@ -2,9 +2,12 @@ package com.nckh.motelroom.dto.response;
 
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class BaseListResponse<T> extends BaseResponse {
 
