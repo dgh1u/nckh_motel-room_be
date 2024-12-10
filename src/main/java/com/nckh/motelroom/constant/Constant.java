@@ -7,5 +7,7 @@ public interface Constant {
 
     interface ErrMessageUserValidation{
         String EMAIL_VALIDATE="Email không hợp lệ";
+        String EMAIL_NOT_BLANK="Email không được để trống";
+        String OTP_NOT_BLANK = "OTP không được để trống";
     }
 }

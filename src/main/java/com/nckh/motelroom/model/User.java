@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -48,6 +49,12 @@ public class User {
 
     @Column(name = "balance")
     private Double balance;
+
+    @Column(name = "otp")
+    private String otp;
+
+    @Column(name = "otp_generated_time")
+    private Instant otpGeneratedTime;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
