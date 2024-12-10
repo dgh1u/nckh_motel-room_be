@@ -39,6 +39,10 @@ public class Post {
     @Column(name = "title")
     private String title;
 
+    @ManyToOne
+    @JoinColumn(name = "accomodation_id")
+    private Accomodation accomodation;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id")
