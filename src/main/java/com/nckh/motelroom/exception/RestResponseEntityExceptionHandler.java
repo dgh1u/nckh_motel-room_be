@@ -37,6 +37,15 @@ public class RestResponseEntityExceptionHandler {
         return BaseResponse.error(ErrorCodeDefs.ERR_OTHER, ex.getMessage());
     }
 
+    @ExceptionHandler({EmailException.class})
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    @Order(-1)
+    public BaseResponse handleEmailException(EmailException ex) {
+        log.error("EmailException: {}", ex);
+        return BaseResponse.error(ErrorCodeDefs.ERR_OTHER, ex.getMessage());
+    }
+
     @ExceptionHandler({DataExistException.class})
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

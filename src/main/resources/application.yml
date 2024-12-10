@@ -17,5 +17,10 @@ spring:
     multipart:
       max-file-size: 2MB
       max-request-size: 2MB
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
 jwt:
   key: ${JWT_KEY}
