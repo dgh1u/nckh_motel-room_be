@@ -29,7 +29,7 @@ public class PostServiceImp implements PostService {
 
 
     //Inject Repository into class
-    private final PostRepository postRepository;
+    private PostRepository postRepository;
 
     private final UserRepository userRepository;
 
