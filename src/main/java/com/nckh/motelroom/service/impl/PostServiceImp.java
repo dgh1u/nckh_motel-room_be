@@ -33,7 +33,7 @@ public class PostServiceImp implements PostService {
 
     private UserRepository userRepository;
 
-    private final DistrictRepository districtRepository;
+    private DistrictRepository districtRepository;
 
     //Some Mapper in this
     private final PostMapper postMapper;
