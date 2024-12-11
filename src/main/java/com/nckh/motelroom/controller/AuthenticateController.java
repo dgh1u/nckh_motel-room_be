@@ -1,6 +1,5 @@
 package com.nckh.motelroom.controller;
 
-import com.google.gson.Gson;
 import com.nckh.motelroom.dto.request.*;
 import com.nckh.motelroom.dto.response.BaseResponse;
 import com.nckh.motelroom.dto.response.LoginResponse;

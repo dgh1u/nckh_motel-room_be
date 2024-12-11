@@ -21,26 +21,24 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-
 @Service
-@RequiredArgsConstructor
 public class PostServiceImp implements PostService {
 
     //Inject Service
 
 
     //Inject Repository into class
-    private final PostRepository postRepository;
+    private PostRepository postRepository;
 
-    private final UserRepository userRepository;
+    private UserRepository userRepository;
 
-    private final DistrictRepository districtRepository;
+    private DistrictRepository districtRepository;
 
     //Some Mapper in this
-    private final PostMapper postMapper;
+    private PostMapper postMapper;
 
-    private final AccommodationMapper accommodationMapper;
-    private final ActionService actionService;
+    private AccommodationMapper accommodationMapper;
+    private ActionService actionService;
 
     @Override
     public Page<PostDto> getAllPost(Pageable page) {
