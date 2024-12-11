@@ -38,8 +38,8 @@ public class PostServiceImp implements PostService {
     //Some Mapper in this
     private PostMapper postMapper;
 
-    private final AccommodationMapper accommodationMapper;
-    private final ActionService actionService;
+    private AccommodationMapper accommodationMapper;
+    private ActionService actionService;
 
     @Override
     public Page<PostDto> getAllPost(Pageable page) {
