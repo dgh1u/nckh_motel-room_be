@@ -21,6 +21,11 @@ public class PostController {
     @Autowired
     PostServiceImp postService;
 
+    @GetMapping("/post/hello-world")
+    public String HelloWolrd(){
+        return "Hello World";
+    }
+
     @ApiOperation(value = "Lấy danh sách tin đăng tìm kiếm theo tiêu chí")
     @GetMapping("/posts/search")
     public Page<PostDto> searchPost(SearchDto searchForm, @RequestParam int page, @RequestParam int sort){
