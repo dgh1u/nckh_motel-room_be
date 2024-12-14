@@ -13,7 +13,7 @@ import org.hibernate.annotations.OnDeleteAction;
 public class Image {
     @Id
     @Column(name = "id", nullable = false)
-    private Long id;
+    private String id;
 
     @Column(name = "data")
     private byte[] data;
