@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
  * DTO for {@link com.nckh.motelroom.model.Criterion}
  */
 @Data
-public class CriterionDto implements Serializable {
+public class CriteriaDto implements Serializable {
     private Long id;
 
     private boolean motel;
