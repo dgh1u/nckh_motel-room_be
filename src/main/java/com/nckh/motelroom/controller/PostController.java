@@ -11,6 +11,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -20,19 +23,14 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 @Api(value = "Tìm nhà trọ")
 public class PostController {
+    private final JwtConfig jwtConfig;
 
-    @Autowired
-    JwtConfig jwtConfig;
+    private final UserDetailServiceImp userDetailServiceImp;
 
-    @Autowired
-    UserDetailServiceImp userDetailServiceImp;
-
-    @Autowired
-    PostServiceImp postService;
-    @Autowired
-    JwtTokenFilter jwtTokenFilter;
+    private final PostServiceImp postService;
 
     @GetMapping("/post/hello-world")
     public String HelloWolrd(){

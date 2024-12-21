@@ -4,6 +4,7 @@ import com.nckh.motelroom.model.Criteria;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 /**
@@ -27,5 +28,5 @@ public class CriteriaDto implements Serializable {
 
     private boolean stop;
 
-    private LocalDateTime createAt;
+    private Instant createAt;
 }

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 @Mapper(componentModel = "spring")
 public interface AccommodationMapper {
-
     Accomodation toAccomodation(AccomodationDto accomodationDto);
     AccomodationDto toAccomodationDto(Accomodation accomodation);
 }

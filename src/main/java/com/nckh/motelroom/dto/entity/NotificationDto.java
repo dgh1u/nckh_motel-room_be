@@ -3,6 +3,7 @@ package com.nckh.motelroom.dto.entity;
 import com.nckh.motelroom.model.enums.NotificationName;
 import lombok.Data;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Data
@@ -13,7 +14,7 @@ public class NotificationDto {
 
     private boolean seen;
 
-    private LocalDateTime createAt;
+    private Instant createAt;
 
     private NotificationName notificationName;
 }

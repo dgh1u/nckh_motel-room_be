@@ -12,6 +12,7 @@ import com.nckh.motelroom.model.enums.ActionName;
 import com.nckh.motelroom.repository.DistrictRepository;
 import com.nckh.motelroom.repository.PostRepository;
 import com.nckh.motelroom.repository.UserRepository;
+import com.nckh.motelroom.service.ActionService;
 import com.nckh.motelroom.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.AccessDeniedException;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +31,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class PostServiceImp implements PostService {
-    //Inject Service
     //Inject Repository into class
     private final PostRepository postRepository;
 
