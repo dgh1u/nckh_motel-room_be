@@ -14,5 +14,6 @@ public interface UserMapper {
     User updateUser(UserUpdateUser user);
 
     UserDto toUserDto(User user);
+    @Mapping(target = "authorities",ignore = true)
     User toUser(User user);
 }

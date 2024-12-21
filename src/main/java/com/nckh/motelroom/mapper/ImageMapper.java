@@ -6,7 +6,6 @@ import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 
 @Mapper(componentModel = "spring")
-@Component
 public interface ImageMapper {
     ImageDto toDto(Image image);
     Image toImage(ImageDto imageDto);
