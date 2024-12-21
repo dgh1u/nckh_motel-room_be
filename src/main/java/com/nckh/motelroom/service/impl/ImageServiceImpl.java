@@ -8,6 +8,7 @@ import com.nckh.motelroom.model.Post;
 import com.nckh.motelroom.repository.ImageRepository;
 import com.nckh.motelroom.repository.PostRepository;
 import com.nckh.motelroom.service.ImageService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -20,15 +21,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
+    private final ImageMapper imageMapper;
 
-    ImageMapper imageMapper;
+    private final ImageRepository imageRepository;
 
-    @Autowired
-    ImageRepository imageRepository;
-
-    @Autowired
-    PostRepository postRepository;
+    private final PostRepository postRepository;
 
     @Override
     public ImageDto uploadImage(Long idPost, MultipartFile file) {

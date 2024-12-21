@@ -8,24 +8,22 @@ import com.nckh.motelroom.repository.NotificationRepository;
 import com.nckh.motelroom.repository.UserRepository;
 import com.nckh.motelroom.service.ImageService;
 import com.nckh.motelroom.service.NotificationService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
 
-    @Autowired
-    NotificationRepository notificationRepository;
+    private final NotificationRepository notificationRepository;
 
-    @Autowired
-    CriteriaRepository criteriaRepository;
+    private final CriteriaRepository criteriaRepository;
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    ImageService imageService;
+    private final ImageService imageService;
 
     NotificationMapper notificationMapper;
 

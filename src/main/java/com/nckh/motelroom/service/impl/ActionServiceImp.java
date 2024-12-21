@@ -7,6 +7,7 @@ import com.nckh.motelroom.model.User;
 import com.nckh.motelroom.model.enums.ActionName;
 import com.nckh.motelroom.repository.ActionRepository;
 import com.nckh.motelroom.service.ActionService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -14,11 +15,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ActionServiceImp implements ActionService {
-
-    @Autowired
-    private ActionRepository actionRepository;
-
+    private final ActionRepository actionRepository;
     @Override
     public void createAction(Post post, User user, ActionName actionName) {
         Action action = new Action(post, user, actionName);
