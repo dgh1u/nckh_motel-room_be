@@ -1,16 +1,21 @@
 package com.nckh.motelroom.controller;
 
+import com.nckh.motelroom.config.JwtConfig;
 import com.nckh.motelroom.dto.entity.PostDto;
 import com.nckh.motelroom.dto.entity.SearchDto;
+import com.nckh.motelroom.filter.JwtTokenFilter;
 import com.nckh.motelroom.service.PostService;
 import com.nckh.motelroom.service.impl.PostServiceImp;
+import com.nckh.motelroom.service.impl.UserDetailServiceImp;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,7 +24,15 @@ import org.springframework.web.bind.annotation.*;
 public class PostController {
 
     @Autowired
+    JwtConfig jwtConfig;
+
+    @Autowired
+    UserDetailServiceImp userDetailServiceImp;
+
+    @Autowired
     PostServiceImp postService;
+    @Autowired
+    JwtTokenFilter jwtTokenFilter;
 
     @GetMapping("/post/hello-world")
     public String HelloWolrd(){
@@ -86,15 +99,28 @@ public class PostController {
         return postService.getPostById(id);
     }
 
+//    @ApiOperation(value = "Đăng tin mới")
+//    @PostMapping("/post")
+//    public PostDto createPost(@RequestBody PostDto postDTO, @RequestHeader("Authorization") String token) {
+//        String userId = jwtConfig.getUserIdFromJWT(token);
+//        UserDetails userDetails = userDetailServiceImp.loadUserByUsername(userId);
+//        userDetails.getUsername();
+////        String username =
+//        return postService.createPost(postDTO, "");
+//    }
+
     @ApiOperation(value = "Đăng tin mới")
     @PostMapping("/post")
-    public PostDto createPost(@RequestBody PostDto postDTO) {
-        return postService.createPost(postDTO, "");
+    public String createPost(@RequestHeader("Authorization") String token) {
+        String userId = jwtConfig.getUserIdFromJWT(token);
+        UserDetails userDetails = userDetailServiceImp.loadUserByUsername(userId);
+        return userDetails.getUsername();
+//        String username =
+//        return postService.createPost(postDTO, "");
     }
 
     @ApiOperation(value = "Duyệt/Khóa tin đăng")
     @PutMapping("/post/{id}/approve/{bool}")
-    @PreAuthorize("#oauth2.hasAnyScope('read')")
     public PostDto ApprovePostAndLogging(@PathVariable Long id, @PathVariable boolean bool) {
         return postService.ApprovePost(id, "USERNAME", bool);
     }
