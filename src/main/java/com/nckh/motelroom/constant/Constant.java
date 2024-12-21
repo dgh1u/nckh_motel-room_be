@@ -10,4 +10,9 @@ public interface Constant {
         String EMAIL_NOT_BLANK="Email không được để trống";
         String OTP_NOT_BLANK = "OTP không được để trống";
     }
+
+    interface SortType {
+        String DESC = "DESC";
+        String ASC = "ASC";
+    }
 }
