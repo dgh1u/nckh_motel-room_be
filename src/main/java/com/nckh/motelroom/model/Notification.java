@@ -32,7 +32,7 @@ public class Notification {
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "criteria_id")
-    private Criterion criteria;
+    private Criteria criteria;
 
     @Column(name = "seen")
     private Boolean seen;

@@ -26,7 +26,7 @@ public interface PostService {
 
     String deletePostByAdmin(Long id);
 
-    PostDto ApprovePost(Long idPost, String usernameApprover, boolean isApprove);
+    PostDto ApprovePost(Long idPost, String usernameApprove, boolean isApprove);
 
     PostDto updatePostById(Long id, PostDto postDto);
 

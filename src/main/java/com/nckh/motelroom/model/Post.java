@@ -7,6 +7,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -25,13 +26,13 @@ public class Post {
     private String content;
 
     @Column(name = "create_at")
-    private Instant createAt;
+    private LocalDateTime createAt;
 
     @Column(name = "del")
     private Boolean del;
 
     @Column(name = "last_update")
-    private Instant lastUpdate;
+    private LocalDateTime lastUpdate;
 
     @Column(name = "not_approved")
     private Boolean notApproved;
