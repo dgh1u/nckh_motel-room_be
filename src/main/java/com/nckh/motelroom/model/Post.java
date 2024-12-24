@@ -1,8 +1,11 @@
 package com.nckh.motelroom.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import lombok.Generated;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -13,9 +16,11 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @Table(name = "post")
+@ToString
 public class Post {
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "approved")
@@ -40,7 +45,7 @@ public class Post {
     @Column(name = "title")
     private String title;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "accomodation_id")
     private Accomodation accomodation;
 

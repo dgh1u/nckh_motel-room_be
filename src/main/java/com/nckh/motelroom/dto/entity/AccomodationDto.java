@@ -1,5 +1,6 @@
 package com.nckh.motelroom.dto.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.nckh.motelroom.model.enums.ToiletName;
 import lombok.Data;
 import java.io.Serializable;
@@ -42,8 +43,6 @@ public class AccomodationDto implements Serializable {
     private double xCoordinate;
 
     private double yCoordinate;
-
-    private PostDto postDTO;
 
     private Long idDistrict;
 }

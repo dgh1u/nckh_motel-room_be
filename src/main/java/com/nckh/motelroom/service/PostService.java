@@ -2,6 +2,7 @@ package com.nckh.motelroom.service;
 
 import com.nckh.motelroom.dto.entity.PostDto;
 import com.nckh.motelroom.dto.entity.SearchDto;
+import com.nckh.motelroom.dto.request.post.CreatePostRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -16,7 +17,7 @@ public interface PostService {
 
     PostDto getPostById(Long id);
 
-    PostDto createPost(PostDto postDTO, String name);
+    PostDto createPost(CreatePostRequest createPostRequest, String name);
 
     PostDto updatePost(Long id, PostDto postDTO, String name);
 

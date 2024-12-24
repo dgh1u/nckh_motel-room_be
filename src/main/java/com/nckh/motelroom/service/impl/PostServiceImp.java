@@ -3,6 +3,7 @@ package com.nckh.motelroom.service.impl;
 import com.nckh.motelroom.dto.entity.CommentDto;
 import com.nckh.motelroom.dto.entity.PostDto;
 import com.nckh.motelroom.dto.entity.SearchDto;
+import com.nckh.motelroom.dto.request.post.CreatePostRequest;
 import com.nckh.motelroom.exception.DataNotFoundException;
 import com.nckh.motelroom.mapper.AccommodationMapper;
 import com.nckh.motelroom.mapper.PostMapper;
@@ -110,31 +111,23 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public PostDto createPost(PostDto postDto, String email) {
+    public PostDto createPost(CreatePostRequest createPostRequest, String email) {
         try{
             Optional<User> user = userRepository.findByEmail(email);
             if(user.isPresent()){
-                Post post = postMapper.toPost(postDto);
+                Post post = postMapper.createRequestDtoToPost(createPostRequest);
                 post.setCreateAt(LocalDateTime.now());
                 post.setLastUpdate(LocalDateTime.now());
                 post.setUser(user.get());
                 post.setDel(false);
                 post.setApproved(false);
                 post.setNotApproved(false);
-                // gan vao accomodation
-                Accomodation accomodation = accommodationMapper.toAccomodation(postDto.getAccomodationDTO());
-                accomodation.setPost(post);
-                Optional<District> district = districtRepository.findDistrictById(postDto.getAccomodationDTO().getIdDistrict());
-                accomodation.setDistrict(district.get());
-                post.setAccomodation(accomodation);
-                post.getAccomodation().setStatus(true);
+
                 postRepository.save(post);
                 actionService.createAction(post, user.get(), ActionName.CREATE);
-                postDto = postMapper.toPostDto(post);
-                postDto.setAccomodationDTO(accommodationMapper.toAccomodationDto(accomodation));
-                return postDto;
+                return null;
             }else{
-                throw new DataNotFoundException("Không Tìm Thấy UserId " + postDto.getUserDTO().getId());
+//                throw new DataNotFoundException("Không Tìm Thấy UserId " + postDto.getUserDTO().getId());
             }
         } catch (Exception e) {
             e.printStackTrace();

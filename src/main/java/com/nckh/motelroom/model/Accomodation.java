@@ -1,5 +1,7 @@
 package com.nckh.motelroom.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nckh.motelroom.model.enums.ToiletName;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -69,11 +71,11 @@ public class Accomodation {
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "district_id")
+    @JsonBackReference
     private District district;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "post_id")
+    @JsonBackReference
     private Post post;
-
 }

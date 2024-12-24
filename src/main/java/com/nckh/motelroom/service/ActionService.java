@@ -14,6 +14,5 @@ import java.util.List;
 public interface ActionService {
     void createAction(Post post, User user, ActionName actionName);
     Page<ActionDto> getAction(int age);
-
     Page<ActionDto> getActionByApprover(Long id, int page);
 }
