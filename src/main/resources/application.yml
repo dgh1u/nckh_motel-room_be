@@ -15,8 +15,12 @@ spring:
     allow-circular-references: true
   servlet:
     multipart:
-      max-file-size: 2MB
-      max-request-size: 2MB
+      max-file-size: 200MB
+      max-request-size: 215MB
+      enabled: true
+      # Threshold after which files are written to disk.
+      file-size-threshold: 2KB
+      #spring.servlet.multipart.location=D:/temp
   mail:
     host: ${MAIL_HOST}
     port: ${MAIL_PORT}
@@ -24,3 +28,7 @@ spring:
     password: ${MAIL_PASSWORD}
 jwt:
   key: ${JWT_KEY}
+idea:
+  max:
+    intellisense:
+      filesize: 2500
