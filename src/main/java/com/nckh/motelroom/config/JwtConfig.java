@@ -11,12 +11,14 @@ import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.CollectionUtils;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.StringJoiner;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Configuration
 @RequiredArgsConstructor
@@ -37,13 +39,17 @@ public class JwtConfig {
         Date issuedAt = new Date();
         Date expiration = new Date(issuedAt.getTime() + JWT_EXPIRATION);
 
+        final String authorities = user.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
         return Jwts.builder()
                 .subject(user.getEmail())
                 .issuedAt(issuedAt)
                 .expiration(expiration)
                 .signWith(key)
                 .id(UUID.randomUUID().toString())
-                .claim("scope", buildScope(user))
+                .claim("scope", authorities)
                 .compact();
     }
 
@@ -85,18 +91,5 @@ public class JwtConfig {
             log.error("JWT claims string is empty.");
         }
         return false;
-    }
-
-    private String buildScope(User user) {
-        StringJoiner stringJoiner = new StringJoiner(" ");
-        if (!CollectionUtils.isEmpty(user.getRoles())) {
-            user.getRoles().forEach(role -> {
-                stringJoiner.add(role.getRoleName());
-                if (!CollectionUtils.isEmpty(role.getPermissions())) {
-                    role.getPermissions().forEach(permission -> stringJoiner.add(permission.getPermissionName()));
-                }
-            });
-        }
-        return stringJoiner.toString();
     }
 }

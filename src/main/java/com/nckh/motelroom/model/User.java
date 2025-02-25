@@ -34,6 +34,9 @@ public class User {
     @Column(name = "phone", length = 20)
     private String phone;
 
+    @Column(name = "is_super_admin")
+    private Boolean isSuperAdmin = false;
+
     @Column(name = "full_name")
     private String fullName;
 
@@ -56,23 +59,15 @@ public class User {
     @Column(name = "otp_generated_time")
     private Instant otpGeneratedTime;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
-    )
-    private Collection<Role> roles;
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        if (roles != null) {
-            roles.forEach(role -> {
-                authorities.add(new SimpleGrantedAuthority(role.getRoleName()));
-                role.getPermissions().forEach(permission -> {
-                    authorities.add(new SimpleGrantedAuthority(permission.getPermissionName()));
-                });
-            });
+        if (role != null) {
+            role.getPermissions().forEach(permission -> authorities.add(new SimpleGrantedAuthority(permission.getPermissionId()))); // lay den quyen
+            authorities.add(new SimpleGrantedAuthority(role.getRoleId())); //lay den vai tro
         }
         return authorities;
     }

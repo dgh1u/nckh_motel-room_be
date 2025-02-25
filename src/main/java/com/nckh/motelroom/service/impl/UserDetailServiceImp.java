@@ -28,7 +28,7 @@ public class UserDetailServiceImp implements UserDetailsService {
         return CustomUserDetails.builder()
                 .email(user.getEmail())
                 .password(user.getPassword())
-                .fullName(user.getFullName())
+                .userName(user.getFullName())
                 .id(user.getId())
                 .authorities(user.getAuthorities())
                 .build();

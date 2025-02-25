@@ -1,7 +1,8 @@
 package com.nckh.motelroom.service.impl;
 
 import com.nckh.motelroom.config.JwtConfig;
-import com.nckh.motelroom.config.MailConfig;
+import com.nckh.motelroom.constant.RoleEnum;
+import com.nckh.motelroom.dto.custom.CustomUserDetails;
 import com.nckh.motelroom.dto.request.*;
 import com.nckh.motelroom.dto.response.LoginResponse;
 import com.nckh.motelroom.dto.response.RegisterResponse;
@@ -19,11 +20,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -44,54 +44,56 @@ public class AuthenticateServiceImp implements AuthenticateService {
     private final AuthenticationManager authenticationManager;
 
     private final MailUtil mailUtil;
+
     @Override
-        public LoginResponse login(LoginRequest request) {
-            Optional<User> userOptional=userRepository.findByEmail(request.getEmail());
-            if(!userOptional.isPresent()){
-                throw new AuthenticateException("Email hoặc mật khẩu không chính xác");
-            }
-            User user=userOptional.get();
-            if(!passwordEncoder.matches(request.getPassword(),user.getPassword())){
-                throw new AuthenticateException("Email hoặc mật khẩu không chính xác");
-            }
-            if(user.getBlock()){
-                throw new AuthenticateException("Xác thực người dùng");
-            }
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            Set<String> roles=user.getRoles().stream().map(role -> {
-                return role.getRoleName();
-            }).collect(Collectors.toSet());
-
-            return LoginResponse.builder()
-                    .fullName(user.getFullName())
-                    .token(jwtConfig.generateToken(user))
-                    .roles(roles)
-                    .build();
+    public LoginResponse login(LoginRequest request) {
+        Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
+        if (!userOptional.isPresent()) {
+            throw new AuthenticateException("Email hoặc mật khẩu không chính xác");
         }
+        User user = userOptional.get();
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new AuthenticateException("Email hoặc mật khẩu không chính xác");
+        }
+        if (user.getBlock()) {
+            throw new AuthenticateException("Xác thực người dùng");
+        }
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        return LoginResponse.builder()
+                .fullName(user.getFullName())
+                .token(jwtConfig.generateToken(user))
+                .roles(roles)
+                .build();
+    }
 
     @Override
-    @Transactional
     public RegisterResponse register(RegisterRequest request) {
-        Optional<User> userOptional=userRepository.findByEmail(request.getEmail());
-        if(userOptional.isPresent()){
+        Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
+        if (userOptional.isPresent()) {
             throw new DataExistException("Email đã tồn tại");
         }
-        User user=new User();
+        User user = new User();
 
-        Optional<Role> roleOptional=roleRepository.findByRoleName("User");
-        Role role;
-        if(!roleOptional.isPresent()){
-            role=new Role();
-            role.setRoleName("User");
-            roleRepository.save(role);
-        }else{
-            role=roleOptional.get();
+        Optional<Role> customerRole = roleRepository.findById(RoleEnum.CUSTOMER.name());
+        Role role=customerRole.get();
+        if (!customerRole.isPresent()) {
+            role.setRoleId(RoleEnum.CUSTOMER.name());
+            role.setName("Khách hàng");
+            role.setDescription("Khách hàng");
+            role = roleRepository.saveAndFlush(role);
         }
         user.setAddress(request.getAddress());
         user.setFullName(request.getFullName());
         user.setEmail(request.getEmail());
+        user.setIsSuperAdmin(false);
         user.setBlock(true);
         user.setPhone(request.getPhone());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -100,13 +102,11 @@ public class AuthenticateServiceImp implements AuthenticateService {
         user.setOtp(otp);
         user.setOtpGeneratedTime(Instant.now());
 
-        Set<Role> roles=new HashSet<>();
-        roles.add(role);
-        user.setRoles(roles);
+        user.setRole(role);
 
-        mailUtil.sendOtpEmail(user.getEmail(),otp);
+        mailUtil.sendOtpEmail(user.getEmail(), otp);
 
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
 
         return RegisterResponse.builder()
                 .email(user.getEmail())
@@ -118,7 +118,7 @@ public class AuthenticateServiceImp implements AuthenticateService {
 
     @Override
     public String verifyAccount(VerifyAccountRequest request) {
-        String email=request.getEmail();
+        String email = request.getEmail();
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (!userOptional.isPresent()) {
             throw new DataNotFoundException("Không tồn tại người dùng có email là: " + email);
@@ -145,13 +145,13 @@ public class AuthenticateServiceImp implements AuthenticateService {
         user.setOtp(otp);
         user.setOtpGeneratedTime(Instant.now());
         userRepository.save(user);
-        mailUtil.sendOtpEmail(request.getEmail(),otp);
+        mailUtil.sendOtpEmail(request.getEmail(), otp);
         return "Email đã gửi... Hãy xác thực trong 2 phút";
     }
 
     @Override
     public String forgotPassword(ForgotPasswordRequest request) {
-        String email=request.getEmail();
+        String email = request.getEmail();
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (!userOptional.isPresent()) {
             throw new DataNotFoundException("Không tồn tại người dùng có email là: " + email);

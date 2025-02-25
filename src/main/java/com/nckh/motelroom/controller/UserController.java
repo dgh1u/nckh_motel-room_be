@@ -1,8 +1,9 @@
 package com.nckh.motelroom.controller;
 
-import com.nckh.motelroom.config.JwtConfig;
 import com.nckh.motelroom.dto.entity.UserDto;
+import com.nckh.motelroom.dto.request.CreateUserRequest;
 import com.nckh.motelroom.dto.request.GetUserRequest;
+import com.nckh.motelroom.dto.request.UpdateUserRequest;
 import com.nckh.motelroom.dto.response.BaseResponse;
 import com.nckh.motelroom.mapper.UserMapper;
 import com.nckh.motelroom.model.User;
@@ -13,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,17 +23,16 @@ import java.util.AbstractMap;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("user")
+@RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
     private final UserMapper userMapper;
 
-    private final JwtConfig jwtConfig;
-
     @ApiOperation(value = "Lấy thông tin nhiêu tài khoản")
     @GetMapping("")
+    @PreAuthorize("hasAnyAuthority('ADMIN' , 'EMPLOYEE')")
     public ResponseEntity<?> getAllUser(@Valid @ModelAttribute GetUserRequest request) {
         Page<User> page = userService.getAllUser(request, PageRequest.of(request.getStart(), request.getLimit()));
 
@@ -47,6 +46,34 @@ public class UserController {
     @PreAuthorize("#oauth2.hasAnyScope('read')") // for authenticated request (logged)
     public ResponseEntity<?> getAvatar(@PathVariable("id") Long id) {
         return ResponseEntity.ok(new AbstractMap.SimpleEntry<>("data", userService.selectUserById(id).getB64()));
+    }
+
+    @ApiOperation(value = "Lấy thông tin của một tài khoản")
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN' , 'EMPLOYEE')")
+    public ResponseEntity<?> getUser(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(userService.selectUserById(id));
+    }
+
+    @ApiOperation(value = "Tạo một người dùng")
+    @PostMapping("")
+    @PreAuthorize("hasAnyAuthority('ADMIN' , 'EMPLOYEE')")
+    public ResponseEntity<?> createUser(@RequestBody CreateUserRequest request){
+        return ResponseEntity.ok(userService.createUser(request));
+    }
+
+    @ApiOperation(value = "Cập nhật một người dùng")
+    @PutMapping("")
+    @PreAuthorize("hasAnyAuthority('ADMIN' , 'EMPLOYEE')")
+    public ResponseEntity<?> updateUser(@RequestBody UpdateUserRequest request){
+        return ResponseEntity.ok(userService.updateUser(request));
+    }
+
+    @ApiOperation(value = "Xóa một người dùng")
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    public ResponseEntity<?> deleteUser(@PathVariable("id") Long id){
+        return ResponseEntity.ok("Xóa người dùng thành công");
     }
 
     @ApiOperation(value = "Upload avatar một tài khoản")

@@ -14,6 +14,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public class CustomUserQuery {
     private CustomUserQuery(){}
@@ -23,7 +24,7 @@ public class CustomUserQuery {
     public static class UserFilterParam {
         private String keywords;
         private Boolean block;
-        private Collection<Integer> roles;
+        private List<String> roles;
         private String sortField;
         private String sortType;
     }
