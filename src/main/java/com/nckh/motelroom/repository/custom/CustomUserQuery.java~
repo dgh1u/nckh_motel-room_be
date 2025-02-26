@@ -24,7 +24,7 @@ public class CustomUserQuery {
     public static class UserFilterParam {
         private String keywords;
         private Boolean block;
-        private String roleId;
+        private List<String> roles;
         private String sortField;
         private String sortType;
     }
@@ -39,9 +39,9 @@ public class CustomUserQuery {
             if (param.block != null) {
                 predicates.add(criteriaBuilder.equal(root.get("block"), param.block));
             }
-            if (param.roleId!=null) {
-                Join<User, Role> userJoin = root.join("role");
-                predicates.add(criteriaBuilder.equal(userJoin.get("id"), (param.roleId)));
+            if (!CollectionUtils.isEmpty(param.roles)) {
+                Join<User, Role> roleJoin = root.joinList("roles");
+                predicates.add(roleJoin.get("id").in(param.roles));
             }
             if (param.sortField != null && !param.sortField.equals("")) {
                 if (param.sortType.equals(Constant.SortType.DESC) || param.sortType.equals("")) {
