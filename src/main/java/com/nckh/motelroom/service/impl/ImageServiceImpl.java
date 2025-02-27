@@ -2,6 +2,7 @@ package com.nckh.motelroom.service.impl;
 
 import com.nckh.motelroom.dto.entity.ImageDto;
 import com.nckh.motelroom.exception.DataNotFoundException;
+import com.nckh.motelroom.exception.MyCustomException;
 import com.nckh.motelroom.mapper.ImageMapper;
 import com.nckh.motelroom.model.Image;
 import com.nckh.motelroom.model.Post;
@@ -55,7 +56,7 @@ public class ImageServiceImpl implements ImageService {
             Image image = new Image(fileName, file.getContentType(), file.getBytes(), post.get());
             return imageRepository.save(image);
         } catch (Exception e) {
-            throw new RuntimeException("Error while i handle save image " +fileName +"!"+ e);
+            throw new MyCustomException("Error while i handle save image " +fileName +"!"+ e);
         }
     }
 

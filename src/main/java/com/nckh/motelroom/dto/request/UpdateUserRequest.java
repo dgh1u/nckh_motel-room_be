@@ -23,5 +23,5 @@ public class UpdateUserRequest {
     private String b64;
 
     private String fileType;
-    private String role;
+    private String roleId;
 }

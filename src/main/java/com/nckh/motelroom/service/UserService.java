@@ -8,6 +8,8 @@ import com.nckh.motelroom.repository.custom.CustomUserQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
+
 public interface UserService {
     Page<User> getAllUser(CustomUserQuery.UserFilterParam param, PageRequest pageRequest);
     UserDto selectUserByEmail(String email);
@@ -18,4 +20,5 @@ public interface UserService {
     UserDto updateUser(UpdateUserRequest request);
 
     void deleteUser(Long id);
+    List<UserDto> deleteAllIdUsers(List<Long> ids);
 }

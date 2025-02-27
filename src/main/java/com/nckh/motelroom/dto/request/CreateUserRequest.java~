@@ -21,5 +21,5 @@ public class CreateUserRequest {
     @NotBlank(message = "Số điện thoại không được để trống")
     private String phone;
 
-    private String roleId;
+    private String role;
 }

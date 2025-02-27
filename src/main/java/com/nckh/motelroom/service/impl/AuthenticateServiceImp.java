@@ -9,6 +9,7 @@ import com.nckh.motelroom.dto.response.RegisterResponse;
 import com.nckh.motelroom.exception.AuthenticateException;
 import com.nckh.motelroom.exception.DataExistException;
 import com.nckh.motelroom.exception.DataNotFoundException;
+import com.nckh.motelroom.exception.MyCustomException;
 import com.nckh.motelroom.model.Role;
 import com.nckh.motelroom.model.User;
 import com.nckh.motelroom.repository.RoleRepository;
@@ -130,7 +131,7 @@ public class AuthenticateServiceImp implements AuthenticateService {
             userRepository.save(user);
             return "OTP đã xác thực thành công.";
         } else {
-            throw new RuntimeException("Hãy tạo lại OTP và thử lại.");
+            throw new MyCustomException("Hãy tạo lại OTP và thử lại.");
         }
     }
 
@@ -164,7 +165,7 @@ public class AuthenticateServiceImp implements AuthenticateService {
             userRepository.save(user);
             return "OTP đã xác thực thành công.";
         } else {
-            throw new RuntimeException("Hãy tạo lại OTP và thử lại.");
+            throw new MyCustomException("Hãy tạo lại OTP và thử lại.");
         }
     }
 }
