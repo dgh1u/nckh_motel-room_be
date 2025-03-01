@@ -2,12 +2,13 @@ package com.nckh.motelroom.mapper;
 
 import com.nckh.motelroom.dto.entity.PostDto;
 import com.nckh.motelroom.dto.request.post.CreatePostRequest;
+import com.nckh.motelroom.dto.response.post.UpdatePostResponse;
 import com.nckh.motelroom.model.Post;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {UserMapper.class, AccommodationMapper.class})
 public interface PostMapper {
     PostDto toPostDto(Post post);
     Post toPost(PostDto postDto);
@@ -22,4 +23,8 @@ public interface PostMapper {
     @Mapping(target = "accomodation", ignore = true)
     @Mapping(target = "user", ignore = true)
     Post createRequestDtoToPost(CreatePostRequest createPostRequest);
+
+    @Mapping(source = "post.accomodation" , target = "accomodationDTO")
+    @Mapping(source = "post.user" , target = "userDTO")
+    UpdatePostResponse toUpdatePostResponse(Post post);
 }

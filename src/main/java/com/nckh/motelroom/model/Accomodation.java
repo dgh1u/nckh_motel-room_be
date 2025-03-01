@@ -6,9 +6,13 @@ import com.nckh.motelroom.model.enums.ToiletName;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.math.BigDecimal;
+
+@ToString
 @Getter
 @Setter
 @Entity
@@ -29,10 +33,10 @@ public class Accomodation {
     private Boolean airConditioner;
 
     @Column(name = "cabletv")
-    private Double cabletv;
+    private Boolean cableTV;
 
     @Column(name = "electric_price")
-    private Double electricPrice;
+    private BigDecimal electricPrice;
 
     @Column(name = "heater")
     private Boolean heater;
@@ -47,7 +51,7 @@ public class Accomodation {
     private Boolean parking;
 
     @Column(name = "price")
-    private Double price;
+    private BigDecimal price;
 
     @Column(name = "status")
     private Boolean status;
@@ -60,7 +64,7 @@ public class Accomodation {
     private Boolean tv;
 
     @Column(name = "water_price")
-    private Double waterPrice;
+    private BigDecimal waterPrice;
 
     @Column(name = "x_coordinate")
     private Double xCoordinate;
@@ -68,13 +72,13 @@ public class Accomodation {
     @Column(name = "y_coordinate")
     private Double yCoordinate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "district_id")
     @JsonBackReference
     private District district;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonBackReference
     private Post post;

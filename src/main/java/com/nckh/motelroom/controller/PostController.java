@@ -4,6 +4,8 @@ import com.nckh.motelroom.config.JwtConfig;
 import com.nckh.motelroom.dto.entity.PostDto;
 import com.nckh.motelroom.dto.entity.SearchDto;
 import com.nckh.motelroom.dto.request.post.CreatePostRequest;
+import com.nckh.motelroom.dto.request.post.UpdatePostRequest;
+import com.nckh.motelroom.dto.response.post.UpdatePostResponse;
 import com.nckh.motelroom.service.impl.PostServiceImp;
 import com.nckh.motelroom.service.impl.UserDetailServiceImp;
 import io.swagger.annotations.Api;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -98,10 +101,11 @@ public class PostController {
 //        String userId = jwtConfig.getUserIdFromJWT(token);
 //        UserDetails userDetails = userDetailServiceImp.loadUserByUsername(userId);
 //        userDetails.getUsername();
-////        String username =
+//        String username =
 //        return postService.createPost(postDTO, "");
 //    }
 
+    // xong roi day
     @ApiOperation(value = "Đăng tin mới")
     @PostMapping("/post")
     public PostDto createPost(@RequestHeader("Authorization") String token, @RequestBody CreatePostRequest createPostRequest) {
@@ -110,20 +114,28 @@ public class PostController {
         return postService.createPost(createPostRequest, userDetails.getUsername());
     }
 
+    // xong roi đấy nhưng còn thiếu cái notification
     @ApiOperation(value = "Duyệt/Khóa tin đăng")
     @PutMapping("/post/{id}/approve/{bool}")
-    public PostDto ApprovePostAndLogging(@PathVariable Long id, @PathVariable boolean bool) {
-        return postService.ApprovePost(id, "USERNAME", bool);
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MODERATOR')")
+    public PostDto ApprovePostAndLogging(@RequestHeader("Authorization") String token, @PathVariable Long id, @PathVariable boolean bool) {
+        String userId = jwtConfig.getUserIdFromJWT(token.split(" ")[1]);
+        return postService.ApprovePost(id, userId, bool);
     }
 
+    // ok
     @ApiOperation(value = "Cập nhật một tin đăng")
     @PutMapping("/post/{id}")
-    public PostDto updatePost(@PathVariable Long id, @RequestBody PostDto postDTO) {
-        return postService.updatePost(id, postDTO, "USSERNAME");
+    public ResponseEntity<UpdatePostResponse> updatePost(@RequestHeader("Authorization") String token, @PathVariable Long id, @RequestBody UpdatePostRequest updatePostRequest) {
+        String userId = jwtConfig.getUserIdFromJWT(token.split(" ")[1]);
+        UpdatePostResponse updatedPost = postService.updatePost(id, updatePostRequest, userId);
+        return ResponseEntity.ok(updatedPost);
     }
 
+    // đang làm
     @ApiOperation(value = "Ẩn một tin đăng")
     @PutMapping("/post/hide/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MODERATOR')")
     public PostDto hidePost(@PathVariable Long id) {
         return postService.hidePost(id);
     }
