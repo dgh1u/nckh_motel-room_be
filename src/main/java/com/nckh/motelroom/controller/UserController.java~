@@ -79,7 +79,7 @@ public class UserController {
     }
 
     @ApiOperation(value = "Xóa nhiều người dùng")
-    @DeleteMapping("/all")
+    @DeleteMapping("/delete/all")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     ResponseEntity<?> deleteAllById(@RequestBody List<Long> ids) {
         List<UserDto> response = userService.deleteAllIdUsers(ids);

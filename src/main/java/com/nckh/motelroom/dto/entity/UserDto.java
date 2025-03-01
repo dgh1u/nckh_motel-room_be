@@ -22,5 +22,5 @@ public class UserDto {
 
     private String fileType;
 
-    private List<String> role;
+    private RoleDto role;
 }

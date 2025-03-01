@@ -1,5 +1,6 @@
 package com.nckh.motelroom.dto.custom;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,10 +17,15 @@ import java.util.Collection;
 public class CustomUserDetails implements UserDetails {
     private static final long serialVersionUID = 1L;
     private Long id;
+    private String name;
+    private String userName;
+    private String phone;
     private String email;
+    @JsonIgnore
     private String password;
-    private String fullName;
-    Collection<? extends GrantedAuthority> authorities;
+    private Collection<? extends GrantedAuthority> authorities;
+    private Boolean isSuperAdmin = false;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
@@ -32,7 +38,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return userName;
     }
 
     @Override
