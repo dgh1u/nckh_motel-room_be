@@ -8,6 +8,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -38,7 +39,7 @@ public class Notification {
     private Boolean seen;
 
     @Column(name = "create_at")
-    private Instant createAt;
+    private LocalDateTime createAt;
 
     @Column(name = "notification_name")
     @Enumerated(EnumType.STRING)

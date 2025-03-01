@@ -1,17 +1,12 @@
-package com.nckh.motelroom.dto.entity;
+package com.nckh.motelroom.dto.request.accommodation;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.nckh.motelroom.model.enums.ToiletName;
 import lombok.Data;
-import java.io.Serializable;
+
 import java.math.BigDecimal;
 
-/**
- * DTO for {@link com.nckh.motelroom.model.Accomodation}
- */
 @Data
-public class AccomodationDto implements Serializable {
-    private long id;
+public class CreateAccommodationRequest {
     // diện tích
     private double acreage;
     // địa chỉ
@@ -21,29 +16,29 @@ public class AccomodationDto implements Serializable {
     // giá nước
     private BigDecimal waterPrice;
     // có mạng hay không?
-    private Boolean internet;
+    private boolean internet;
     // có chỗ để xe không?
-    private Boolean parking;
+    private boolean parking;
     // có điều hòa không
-    private Boolean airConditioner;
+    private boolean airConditioner;
     // lò sưởi?
-    private Boolean heater;
+    private boolean heater;
     // Truyền hình cáp?
-    private Boolean cableTV;
+    private boolean cableTV;
     // có TV không?
-    private Boolean tv;
+    private boolean tv;
     // Dạng Toilet? Khép kín hay chung?
     private ToiletName toilet;
     // giá trọ
     private BigDecimal price;
     // trạng thái
-    private Boolean status;
+    private boolean status;
     // là nhà trọ?
-    private Boolean motel;
+    private boolean motel;
     // Tọa độ X
-    private Double xCoordinate;
+    private double xCoordinate;
     // Tọa độ Y
-    private Double yCoordinate;
+    private double yCoordinate;
     // Mã Quận?
     private Long idDistrict;
 }

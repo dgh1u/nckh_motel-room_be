@@ -3,17 +3,21 @@ package com.nckh.motelroom.service.impl;
 import com.nckh.motelroom.dto.entity.CommentDto;
 import com.nckh.motelroom.dto.entity.PostDto;
 import com.nckh.motelroom.dto.entity.SearchDto;
+import com.nckh.motelroom.dto.request.post.CreatePostRequest;
+import com.nckh.motelroom.dto.request.post.UpdatePostRequest;
+import com.nckh.motelroom.dto.response.post.UpdatePostResponse;
 import com.nckh.motelroom.exception.DataNotFoundException;
 import com.nckh.motelroom.mapper.AccommodationMapper;
 import com.nckh.motelroom.mapper.PostMapper;
 import com.nckh.motelroom.mapper.UserMapper;
 import com.nckh.motelroom.model.*;
 import com.nckh.motelroom.model.enums.ActionName;
+import com.nckh.motelroom.repository.AccomodationRepository;
 import com.nckh.motelroom.repository.DistrictRepository;
 import com.nckh.motelroom.repository.PostRepository;
 import com.nckh.motelroom.repository.UserRepository;
-import com.nckh.motelroom.service.ActionService;
 import com.nckh.motelroom.service.PostService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,8 +25,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.AccessDeniedException;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +33,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class PostServiceImp implements PostService {
+    //Inject Service
     //Inject Repository into class
     private final PostRepository postRepository;
 
@@ -38,11 +41,13 @@ public class PostServiceImp implements PostService {
 
     private final DistrictRepository districtRepository;
 
+    private final AccomodationRepository accomodationRepository;
+
     private final ImageServiceImpl imageServiceImpl;
 
     private final ActionServiceImp actionService;
 
-    //Some Mapper in this
+ ;   //Some Mapper in this
     private final PostMapper postMapper;
 
     private final AccommodationMapper accommodationMapper;
@@ -111,31 +116,29 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public PostDto createPost(PostDto postDto, String email) {
+    @Transactional
+    public PostDto createPost(CreatePostRequest createPostRequest, String email) {
         try{
             Optional<User> user = userRepository.findByEmail(email);
             if(user.isPresent()){
-                Post post = postMapper.toPost(postDto);
+                //create post
+                Post post = postMapper.createRequestDtoToPost(createPostRequest);
                 post.setCreateAt(LocalDateTime.now());
                 post.setLastUpdate(LocalDateTime.now());
                 post.setUser(user.get());
                 post.setDel(false);
                 post.setApproved(false);
                 post.setNotApproved(false);
-                // gan vao accomodation
-                Accomodation accomodation = accommodationMapper.toAccomodation(postDto.getAccomodationDTO());
+                //tao accomodation
+                Accomodation accomodation = accommodationMapper.toAccomodation(createPostRequest.getAccomodation());
                 accomodation.setPost(post);
-                Optional<District> district = districtRepository.findDistrictById(postDto.getAccomodationDTO().getIdDistrict());
-                accomodation.setDistrict(district.get());
-                post.setAccomodation(accomodation);
-                post.getAccomodation().setStatus(true);
-                postRepository.save(post);
+                // accômdation lưu tại đây
+                Accomodation accomodationSaved = accomodationRepository.save(accomodation);
+                post.setAccomodation(accomodationSaved);
+                post.setUser(user.get());
+                Post postSaved = postRepository.save(post);
                 actionService.createAction(post, user.get(), ActionName.CREATE);
-                postDto = postMapper.toPostDto(post);
-                postDto.setAccomodationDTO(accommodationMapper.toAccomodationDto(accomodation));
-                return postDto;
-            }else{
-                throw new DataNotFoundException("Không Tìm Thấy UserId " + postDto.getUserDTO().getId());
+                return postMapper.toPostDto(postSaved);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -144,35 +147,36 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public PostDto updatePost(Long id, PostDto postDTO, String name) {
+    @Transactional
+    public UpdatePostResponse updatePost(Long id, UpdatePostRequest updatePostRequest, String name) {
         try{
+            //Lấy Post ra và xử lý
             Optional<Post> postOptional = postRepository.findPostById(id);
-            if(postOptional.isPresent()){
-                if(postOptional.get().getUser().getEmail().equals(name)){
-                    postDTO.setId(id);
-                    postDTO.getAccomodationDTO().setId(postOptional.get().getAccomodation().getId());
-                    postDTO.setCreateAt(postOptional.get().getCreateAt());
-                    // tao post moi tu postDto
-                    postOptional = Optional.of(postMapper.toPost(postDTO));
-                    Optional<User> user = userRepository.findById(postDTO.getUserDTO().getId());
-                    postOptional.get().setUser(user.get());
-                    // tao accommodation tu postDTO
-                    Accomodation accomodation = accommodationMapper.toAccomodation(postDTO.getAccomodationDTO());
-                    accomodation.setPost(postOptional.get());
-                    accomodation.setId(postDTO.getAccomodationDTO().getId());
-                    Optional<District> district = districtRepository.findDistrictById(postDTO.getAccomodationDTO().getIdDistrict());
-                    accomodation.setDistrict(district.get());
-                    postOptional.get().setAccomodation(accomodation);
-                    postOptional.get().setLastUpdate(LocalDateTime.now());
+            Optional<District> districtOptional = districtRepository.findDistrictById(updatePostRequest.getAccomodation().getIdDistrict());
+            Accomodation accomodation = accommodationMapper.toAccomodation(updatePostRequest.getAccomodation());
 
-                    postRepository.save(postOptional.get());
-                    postDTO = postMapper.toPostDto(postOptional.get());
-                    postDTO.setAccomodationDTO(accommodationMapper.toAccomodationDto(accomodation));
-                    postDTO.setUserDTO(userMapper.toUserDto(user.get()));
-                    return postDTO;
-                }else{
-                    throw new AccessDeniedException("You don't have role");
+            districtOptional.ifPresent(district -> {
+                accomodation.setDistrict(district);
+                accomodation.setXCoordinate(district.getXCoordinate());
+                accomodation.setYCoordinate(district.getYCoordinate());
+            });
+
+            if(postOptional.isPresent()){
+                Post post = postOptional.get();
+
+                post.setTitle(updatePostRequest.getTitle());
+                post.setContent(updatePostRequest.getContent());
+                post.setDel(updatePostRequest.isDel());
+                post.setLastUpdate(LocalDateTime.now());
+
+                post.setAccomodation(accomodation);
+                accomodation.setPost(post);
+
+                if (accomodation.getId() != null) {
+                    accomodationRepository.save(accomodation);  // Lưu Accomodation (sử dụng save hoặc merge)
                 }
+                postRepository.save(post);
+                return postMapper.toUpdatePostResponse(post);
             }else{
                 throw new DataNotFoundException("I can't found any post_id like " + id);
             }
@@ -181,7 +185,6 @@ public class PostServiceImp implements PostService {
         }
         return null;
     }
-
     @Override
     public PostDto hidePost(Long id) {
         try {
@@ -189,8 +192,7 @@ public class PostServiceImp implements PostService {
             if (post.isPresent()) {
                 post.get().setDel(true);
                 postRepository.save(post.get());
-                PostDto postDTO = postMapper.toPostDto(post.get());
-                return postDTO;
+                return postMapper.toPostDto(post.get());
             } else{
                 throw new DataNotFoundException("I can't found any post_id like " + id);
             }
@@ -264,20 +266,23 @@ public class PostServiceImp implements PostService {
     public PostDto ApprovePost(Long idPost, String usernameApprove, boolean isApprove) {
         try {
             Optional<Post> post = postRepository.findById(idPost);
-            if (!post.isPresent())
+            if (post.isEmpty()){
                 throw new DataNotFoundException("Không tìm thấy post id " + idPost);
-            if (isApprove) {
-                Optional<User> user = userRepository.findByEmail(usernameApprove);
-                post.get().setApproved(true);
-                post.get().setNotApproved(false);
-                actionService.createAction(post.get(), user.get(), ActionName.APPROVE);
+            }
+
+            Optional<User> user = userRepository.findByEmail(usernameApprove);
+            if(user.isPresent()){
+                if (isApprove) {
+                    post.get().setApproved(true);
+                    post.get().setNotApproved(false);
+                    actionService.createAction(post.get(), user.get(), ActionName.APPROVE);
 //                applicationEventPublisher.publishEvent(new NotificationEvent(this, post.get()));
-            } else {
-                Optional<User> user = userRepository.findByEmail(usernameApprove);
-                post.get().setNotApproved(true);
-                post.get().setApproved(false);
-                actionService.createAction(post.get(), user.get(), ActionName.BLOCK);
+                } else {
+                    post.get().setNotApproved(true);
+                    post.get().setApproved(false);
+                    actionService.createAction(post.get(), user.get(), ActionName.BLOCK);
 //                applicationEventPublisher.publishEvent(new NotificationEvent(this, post.get()));
+                }
             }
             postRepository.save(post.get());
             return postMapper.toPostDto(post.get());

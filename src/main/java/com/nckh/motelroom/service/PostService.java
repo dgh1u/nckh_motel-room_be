@@ -2,8 +2,12 @@ package com.nckh.motelroom.service;
 
 import com.nckh.motelroom.dto.entity.PostDto;
 import com.nckh.motelroom.dto.entity.SearchDto;
+import com.nckh.motelroom.dto.request.post.CreatePostRequest;
+import com.nckh.motelroom.dto.request.post.UpdatePostRequest;
+import com.nckh.motelroom.dto.response.post.UpdatePostResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 
 public interface PostService {
     Page<PostDto> getAllPost(Pageable page);
@@ -16,9 +20,9 @@ public interface PostService {
 
     PostDto getPostById(Long id);
 
-    PostDto createPost(PostDto postDTO, String name);
+    PostDto createPost(CreatePostRequest createPostRequest, String name);
 
-    PostDto updatePost(Long id, PostDto postDTO, String name);
+    UpdatePostResponse updatePost(Long id, UpdatePostRequest updatePostRequest, String name);
 
     PostDto hidePost(Long id);
 
