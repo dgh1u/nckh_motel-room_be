@@ -35,7 +35,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             String jwt = getJwtFromRequest(request);
 
             if (StringUtils.hasText(jwt) && jwtConfig.validateToken(jwt)) {
-                String id=jwtConfig.getClaims(jwt).getId();
                 // Lấy id user từ chuỗi jwt
                 String userId = jwtConfig.getUserIdFromJWT(jwt);
                 // Lấy thông tin người dùng từ id
