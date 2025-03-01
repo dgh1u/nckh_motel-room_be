@@ -2,6 +2,7 @@ package com.nckh.motelroom.mapper;
 
 import com.nckh.motelroom.dto.entity.PostDto;
 import com.nckh.motelroom.dto.request.post.CreatePostRequest;
+import com.nckh.motelroom.dto.response.post.CreatePostResponse;
 import com.nckh.motelroom.dto.response.post.UpdatePostResponse;
 import com.nckh.motelroom.model.Post;
 import org.mapstruct.Mapper;
@@ -27,4 +28,12 @@ public interface PostMapper {
     @Mapping(source = "post.accomodation" , target = "accomodationDTO")
     @Mapping(source = "post.user" , target = "userDTO")
     UpdatePostResponse toUpdatePostResponse(Post post);
+
+    @Mapping(target = "user", source = "post.user.email")  // Ánh xạ từ user sang email thay vì username
+    @Mapping(target = "accomodationId", source = "post.accomodation.id")  // Ánh xạ từ accomodation sang id
+    @Mapping(target = "createAt", source = "post.createAt")  // Ánh xạ createAt
+    @Mapping(target = "lastUpdate", source = "post.lastUpdate")  // Ánh xạ lastUpdate
+    CreatePostResponse toCreatePostResponse(Post post);
+
+
 }

@@ -39,7 +39,7 @@ public class Notification {
     private Boolean seen;
 
     @Column(name = "create_at")
-    private LocalDateTime createAt;
+    private Instant createAt;
 
     @Column(name = "notification_name")
     @Enumerated(EnumType.STRING)

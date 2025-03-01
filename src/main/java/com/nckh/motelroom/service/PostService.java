@@ -4,10 +4,10 @@ import com.nckh.motelroom.dto.entity.PostDto;
 import com.nckh.motelroom.dto.entity.SearchDto;
 import com.nckh.motelroom.dto.request.post.CreatePostRequest;
 import com.nckh.motelroom.dto.request.post.UpdatePostRequest;
+import com.nckh.motelroom.dto.response.post.CreatePostResponse;
 import com.nckh.motelroom.dto.response.post.UpdatePostResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 
 public interface PostService {
     Page<PostDto> getAllPost(Pageable page);
@@ -20,7 +20,7 @@ public interface PostService {
 
     PostDto getPostById(Long id);
 
-    PostDto createPost(CreatePostRequest createPostRequest, String name);
+    CreatePostResponse createPost(CreatePostRequest createPostRequest, String email);
 
     UpdatePostResponse updatePost(Long id, UpdatePostRequest updatePostRequest, String name);
 
@@ -30,7 +30,7 @@ public interface PostService {
 
     String deletePostByAdmin(Long id);
 
-    PostDto ApprovePost(Long idPost, String usernameApprove, boolean isApprove);
+    String ApprovePost(Long idPost, String usernameApprove, boolean isApprove);
 
     PostDto updatePostById(Long id, PostDto postDto);
 

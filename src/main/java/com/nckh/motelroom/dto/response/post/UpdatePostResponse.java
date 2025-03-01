@@ -18,5 +18,6 @@ public class UpdatePostResponse {
     private boolean del;
     private AccomodationDto accomodationDTO;
     private UserDto userDTO;
+    private String type;
 }
 

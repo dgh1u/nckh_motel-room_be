@@ -31,4 +31,6 @@ public class PostDto {
     private List<CommentDto> commentDTOS;
 
     private List<String> imageStrings;
+
+    private String type;
 }

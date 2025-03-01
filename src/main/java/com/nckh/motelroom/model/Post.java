@@ -51,4 +51,6 @@ public class Post {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(name = "type")
+    private String type;
 }
