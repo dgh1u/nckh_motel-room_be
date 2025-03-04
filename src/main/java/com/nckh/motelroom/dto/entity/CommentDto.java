@@ -3,6 +3,7 @@ package com.nckh.motelroom.dto.entity;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 /**
@@ -14,7 +15,7 @@ public class CommentDto implements Serializable {
 
     private String content;
 
-    private LocalDateTime lastUpdate;
+    private Instant lastUpdate;
 
     private Long idPost;
 

@@ -1,36 +1,23 @@
-package com.nckh.motelroom.dto.entity;
+package com.nckh.motelroom.dto.response.post;
 
+import com.nckh.motelroom.dto.entity.AccomodationDto;
+import com.nckh.motelroom.dto.entity.UserDto;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
-public class PostDto {
+public class UpdatePostResponse {
     private long id;
-
     private String title;
-
     private String content;
-
     private boolean approved;
-
     private boolean notApproved;
-
     private LocalDateTime createAt;
-
     private LocalDateTime lastUpdate;
-
     private boolean del;
-
-    private UserDto userDTO;
-
     private AccomodationDto accomodationDTO;
-
-    private List<CommentDto> commentDTOS;
-
-    private List<String> imageStrings;
-
+    private UserDto userDTO;
     private String type;
 }
+

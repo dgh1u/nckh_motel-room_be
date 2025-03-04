@@ -1,8 +1,11 @@
 package com.nckh.motelroom.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Collection;
 
 @Getter
 @Setter
@@ -23,4 +26,9 @@ public class District {
     @Column(name = "y_coordinate")
     private Double yCoordinate;
 
+    @OneToMany(cascade = CascadeType.ALL,
+            mappedBy = "district",
+            orphanRemoval = true)
+    @JsonManagedReference
+    private Collection<Accomodation> accomodations;
 }
