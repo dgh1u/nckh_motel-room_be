@@ -3,7 +3,6 @@ package com.nckh.motelroom.service.impl;
 import com.nckh.motelroom.config.JwtConfig;
 import com.nckh.motelroom.constant.RoleEnum;
 import com.nckh.motelroom.dto.custom.CustomUserDetails;
-import com.nckh.motelroom.dto.entity.UserDto;
 import com.nckh.motelroom.dto.request.*;
 import com.nckh.motelroom.dto.response.LoginResponse;
 import com.nckh.motelroom.dto.response.RegisterResponse;
@@ -11,7 +10,6 @@ import com.nckh.motelroom.exception.AuthenticateException;
 import com.nckh.motelroom.exception.DataExistException;
 import com.nckh.motelroom.exception.DataNotFoundException;
 import com.nckh.motelroom.exception.MyCustomException;
-import com.nckh.motelroom.mapper.UserMapper;
 import com.nckh.motelroom.model.Role;
 import com.nckh.motelroom.model.User;
 import com.nckh.motelroom.repository.RoleRepository;
@@ -47,8 +45,6 @@ public class AuthenticateServiceImp implements AuthenticateService {
     private final AuthenticationManager authenticationManager;
 
     private final MailUtil mailUtil;
-
-    private final UserMapper userMapper;
 
     @Override
     public LoginResponse login(LoginRequest request) {
@@ -170,23 +166,6 @@ public class AuthenticateServiceImp implements AuthenticateService {
             return "OTP đã xác thực thành công.";
         } else {
             throw new MyCustomException("Hãy tạo lại OTP và thử lại.");
-        }
-    }
-
-    @Override
-    public UserDto updateProfile(UpdateProfileRequest request) {
-        Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
-        if (!userOptional.isPresent()) {
-            throw new DataExistException("Người dùng không tồn tại");
-        }
-        try {
-            User user =userOptional.get();
-            user.setFullName(request.getFullName());
-            user.setPhone(request.getPhone());
-            user.setAddress(request.getAddress());
-            return userMapper.toUserDto(userRepository.saveAndFlush(user));
-        }catch (Exception e){
-            throw new MyCustomException("Có lỗi xảy ra trong quá trình cập nhât người dùng");
         }
     }
 }
