@@ -6,11 +6,14 @@ import com.nckh.motelroom.dto.request.post.CreatePostRequest;
 import com.nckh.motelroom.dto.request.post.UpdatePostRequest;
 import com.nckh.motelroom.dto.response.post.CreatePostResponse;
 import com.nckh.motelroom.dto.response.post.UpdatePostResponse;
+import com.nckh.motelroom.model.Post;
+import com.nckh.motelroom.repository.custom.CustomUserQuery;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 public interface PostService {
-    Page<PostDto> getAllPost(Pageable page);
+    Page<Post> getAllPost(CustomUserQuery.PostFilterParam param, PageRequest pageRequest);
 
     Page<PostDto> getPostByApproved(boolean bool, int page);
 

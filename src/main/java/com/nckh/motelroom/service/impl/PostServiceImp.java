@@ -16,16 +16,17 @@ import com.nckh.motelroom.mapper.UserMapper;
 import com.nckh.motelroom.model.*;
 import com.nckh.motelroom.model.enums.ActionName;
 import com.nckh.motelroom.repository.*;
+import com.nckh.motelroom.repository.custom.CustomUserQuery;
 import com.nckh.motelroom.service.PostService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.extern.slf4j.XSlf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -64,9 +65,10 @@ public class PostServiceImp implements PostService {
     private final CommentMapper commentMapper;
 
     @Override
-    public Page<PostDto> getAllPost(Pageable page) {
+    public Page<Post> getAllPost(CustomUserQuery.PostFilterParam param, PageRequest pageRequest) {
         try {
-            return postRepository.findAll(page).map(postMapper::toPostDto);
+            Specification<Post> specification = CustomUserQuery.getFilterPost(param);
+            return postRepository.findAll(specification, pageRequest);
         }catch (Exception e){
             throw new DataNotFoundException("Không có bài viết nào được tìm thấy! " + e.getMessage());
         }
