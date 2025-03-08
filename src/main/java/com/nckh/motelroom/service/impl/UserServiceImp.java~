@@ -102,6 +102,7 @@ public class UserServiceImp implements UserService {
         try {
             User user = userMapper.toUpdateUser(request);
             user.setRole(buildRole(request.getRoleId()));
+            user.setPassword(userOptional.get().getPassword());
             return userMapper.toUserDto(userRepository.saveAndFlush(user));
         }catch (Exception e){
             throw new MyCustomException("Có lỗi xảy ra trong quá trình cập nhât người dùng");
@@ -109,6 +110,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteUser(Long id) {
         Optional<User> userOptional = userRepository.findById(id);
         if (!userOptional.isPresent()) {

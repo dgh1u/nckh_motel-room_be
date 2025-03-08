@@ -92,12 +92,9 @@ public class UserServiceImp implements UserService {
     @Override
     @Transactional
     public UserDto updateUser(UpdateUserRequest request) {
-        Optional<User> userOptional = userRepository.findById(request.getId());
+        Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
         if (!userOptional.isPresent()) {
             throw new DataExistException("Người dùng không tồn tại");
-        }
-        if(request.getEmail().equals(userOptional.get().getEmail())){
-            throw new DataExistException("Email đã tồn tại");
         }
         try {
             User user = userMapper.toUpdateUser(request);
@@ -110,6 +107,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteUser(Long id) {
         Optional<User> userOptional = userRepository.findById(id);
         if (!userOptional.isPresent()) {

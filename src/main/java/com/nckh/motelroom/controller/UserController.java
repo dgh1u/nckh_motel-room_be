@@ -44,7 +44,6 @@ public class UserController {
 
     @ApiOperation(value = "Lấy avatar của một tài khoản")
     @GetMapping("/{id}/avatar")
-    @PreAuthorize("#oauth2.hasAnyScope('read')") // for authenticated request (logged)
     public ResponseEntity<?> getAvatar(@PathVariable("id") Long id) {
         return ResponseEntity.ok(new AbstractMap.SimpleEntry<>("data", userService.selectUserById(id).getB64()));
     }
@@ -88,7 +87,6 @@ public class UserController {
 
     @ApiOperation(value = "Upload avatar một tài khoản")
     @PostMapping("/{id}/avatar")
-//    @PreAuthorize("#oauth2.hasAnyScope('read')") // for authenticated request (logged)
     public ResponseEntity<?> uploadAvatar(@PathVariable("id") Long id,
                                           @RequestParam("avatar") MultipartFile file) throws IOException {
 //        String token = header.substring(7);

@@ -7,8 +7,6 @@ import lombok.Data;
 
 @Data
 public class UpdateUserRequest {
-    @NotNull(message = "Id không được để trống")
-    private Long id;
     @Email( regexp = ".+[@].+[\\.].+",message = "Email không hợp lệ")
     private String email;
     @NotBlank(message = "Họ tên không được để trống")
