@@ -3,12 +3,19 @@ package com.nckh.motelroom.controller;
 import com.nckh.motelroom.config.JwtConfig;
 import com.nckh.motelroom.dto.entity.PostDto;
 import com.nckh.motelroom.dto.entity.SearchDto;
+import com.nckh.motelroom.dto.request.GetUserRequest;
 import com.nckh.motelroom.dto.request.post.CreatePostRequest;
+import com.nckh.motelroom.dto.request.post.GetPostRequest;
 import com.nckh.motelroom.dto.request.post.UpdatePostRequest;
+import com.nckh.motelroom.dto.response.BaseResponse;
 import com.nckh.motelroom.dto.response.Response;
 import com.nckh.motelroom.dto.response.post.CreatePostResponse;
 import com.nckh.motelroom.dto.response.post.UpdatePostResponse;
 import com.nckh.motelroom.exception.DataNotFoundException;
+import com.nckh.motelroom.mapper.PostMapper;
+import com.nckh.motelroom.model.Post;
+import com.nckh.motelroom.model.User;
+import com.nckh.motelroom.repository.PostRepository;
 import com.nckh.motelroom.service.impl.PostServiceImp;
 import com.nckh.motelroom.service.impl.UserDetailServiceImp;
 import io.swagger.annotations.Api;
@@ -16,6 +23,7 @@ import io.swagger.annotations.ApiOperation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -23,6 +31,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -34,6 +44,8 @@ public class PostController {
     private final UserDetailServiceImp userDetailServiceImp;
 
     private final PostServiceImp postService;
+    private final PostRepository postRepository;
+    private final PostMapper postMapper;
 
     @GetMapping("/post/hello-world")
     public String HelloWorld(){
@@ -58,8 +70,9 @@ public class PostController {
 
     @ApiOperation(value = "Lấy tất cả tin đăng")
     @GetMapping("/posts")
-    public Page<PostDto> getAllPost(@PageableDefault(page = 0, size = 12) Pageable  page) {
-        return postService.getAllPost(page);
+    public ResponseEntity<?> getAllPost(@Valid @ModelAttribute GetPostRequest request) {
+        Page<Post> page = postService.getAllPost(request, PageRequest.of(request.getStart(), request.getLimit()));
+        return BaseResponse.successListData(page.getContent().stream().map(postMapper::toPostDto).collect(Collectors.toList()), (int) page.getTotalElements());
     }
 
     @ApiOperation(value = "Lấy danh sách tin đăng đã được duyệt")
@@ -74,7 +87,7 @@ public class PostController {
     public Page<PostDto> getAllPostNotApproved(@RequestParam int page) {
         return postService.getPostByApproved(false, page);
     }
-
+    //Đang làm tại đây
     @ApiOperation(value = "Nếu bool = true lấy danh sách tin nhà trọ, ngược lại lấy danh sách tin nhà nguyên căn")
     @GetMapping("/posts/motel/{bool}")
     public ResponseEntity<Page<PostDto>> getMotelPost(
