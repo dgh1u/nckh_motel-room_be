@@ -9,11 +9,7 @@ import java.io.Serializable;
  */
 @Data
 public class DistrictDto implements Serializable {
-    private long id;
+    private Long id;
 
     private String name;
-
-    private double xCoordinate;
-
-    private double yCoordinate;
 }

@@ -20,6 +20,7 @@ import com.nckh.motelroom.service.impl.PostServiceImp;
 import com.nckh.motelroom.service.impl.UserDetailServiceImp;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -47,19 +48,13 @@ public class PostController {
     private final PostRepository postRepository;
     private final PostMapper postMapper;
 
+    //Test
     @GetMapping("/post/hello-world")
     public String HelloWorld(){
         return "Hello World";
     }
 
-    @ApiOperation(value = "Lấy danh sách tin đăng tìm kiếm theo tiêu chí")
-    @GetMapping("/posts/search")
-    public Page<PostDto> searchPost(SearchDto searchForm, @RequestParam int page, @RequestParam int sort){
-        searchForm.setPriceStart(searchForm.getPriceStart()*1000000);
-        searchForm.setPriceEnd(searchForm.getPriceEnd()*1000000);
-        return postService.searchPost(searchForm, page, sort);
-    }
-
+    //Đang delay đoạn này vì chưa biết vị trí hoạt động như nào?
     @ApiOperation(value = "Lấy danh sách tin đăng tìm kiếm xung quanh một vị trí")
     @GetMapping("/posts/searchbymaps")
     public Page<PostDto> searchPostMaps(SearchDto searchForm, @RequestParam int page, @RequestParam int sort){
@@ -68,6 +63,7 @@ public class PostController {
         return postService.searchPostByMaps(searchForm, page, sort);
     }
 
+    // hoàn thành
     @ApiOperation(value = "Lấy tất cả tin đăng")
     @GetMapping("/posts")
     public ResponseEntity<?> getAllPost(@Valid @ModelAttribute GetPostRequest request) {
@@ -75,106 +71,28 @@ public class PostController {
         return BaseResponse.successListData(page.getContent().stream().map(postMapper::toPostDto).collect(Collectors.toList()), (int) page.getTotalElements());
     }
 
-    @ApiOperation(value = "Lấy danh sách tin đăng đã được duyệt")
-    @GetMapping("/posts/approved/true")
-    public Page<PostDto> getAllPostApproved(@RequestParam int page) {
-        return postService.getPostByApproved(true, page);
-    }
-
-    @ApiOperation(value = "Lấy danh sách tin đăng đã bị khóa")
-    @GetMapping("/posts/approved/false")
-    @PreAuthorize("hasAnyAuthority('ADMIN')")
-    public Page<PostDto> getAllPostNotApproved(@RequestParam int page) {
-        return postService.getPostByApproved(false, page);
-    }
-    //Đang làm tại đây
-    @ApiOperation(value = "Nếu bool = true lấy danh sách tin nhà trọ, ngược lại lấy danh sách tin nhà nguyên căn")
-    @GetMapping("/posts/motel/{bool}")
-    public ResponseEntity<Page<PostDto>> getMotelPost(
-            @PathVariable boolean bool,
-            @RequestParam int page,
-            @RequestParam int sort) {
-        try {
-            // Lấy danh sách bài đăng theo loại (nhà trọ/nhà nguyên căn) và sắp xếp
-            Page<PostDto> postDtos = postService.getMotelPost(bool, page, sort);
-
-            // Trả về danh sách bài đăng
-            return ResponseEntity.ok(postDtos);
-        } catch (Exception e) {
-            // Trả về 500 nếu có lỗi xảy ra
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
-
-
-    @ApiOperation(value = "Lấy danh sách tin đăng chờ duyệt")
-    @GetMapping("/posts/waiting")
-    @PreAuthorize("hasAnyAuthority('ADMIN')")
-    public ResponseEntity<Page<PostDto>> getPostWaitingApprove(@RequestParam int page) {
-        try {
-            // Lấy danh sách tin đăng chờ duyệt từ service
-            Page<PostDto> postDtos = postService.getPostWaitingApprove(page);
-            return ResponseEntity.ok(postDtos); // Trả về 200 OK nếu thành công
-        } catch (Exception e) {
-            // Trả về 500 nếu có lỗi server
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
-
-
-    @ApiOperation(value = "Lấy danh sách tin đăng của một người dùng")
-    @GetMapping("/post/user/{idUser}")
-    public ResponseEntity<Page<PostDto>> getPostByIdUser(@PathVariable long idUser,
-                                                         @RequestParam int page) {
-        try {
-            // Lấy danh sách tin đăng
-            Page<PostDto> postDtos = postService.getPostByIdUser(idUser, page);
-            return ResponseEntity.ok(postDtos); // Trả về 200 OK nếu thành công
-        } catch (DataNotFoundException e) {
-            // Trả về 404 nếu không tìm thấy người dùng
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } catch (Exception e) {
-            // Trả về 500 nếu có lỗi server
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
-
-
+    // hoàn thành
     @ApiOperation(value = "Lấy thông tin của một tin đăng")
     @GetMapping("/post/{id}")
-    public ResponseEntity<PostDto> getPostById(@PathVariable Long id) {
+    public ResponseEntity<?> getPostById(@PathVariable Long id) {
         try {
             PostDto postDto = postService.getPostById(id);
-            return ResponseEntity.ok(postDto);  // Trả về HTTP 200 OK nếu thành công
-        } catch (DataNotFoundException e) {
-            // Trả về HTTP 404 nếu không tìm thấy bài viết
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return BaseResponse.successData(postDto);
         } catch (Exception e) {
-            // Trả về HTTP 500 nếu có lỗi server
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
     @ApiOperation(value = "Đăng tin mới")
     @PostMapping("/post")
-    public ResponseEntity<Response<CreatePostResponse>> createPost(@RequestHeader("Authorization") String token, @RequestBody @Valid CreatePostRequest createPostRequest) {
-        String userId = jwtConfig.getUserIdFromJWT(token.split(" ")[1]);
-        UserDetails userDetails = userDetailServiceImp.loadUserByUsername(userId);
-
+    @PreAuthorize("hasAnyAuthority('ADMIN' , 'EMPLOYEE')")
+    public ResponseEntity<?> createPost(@RequestHeader("Authorization") String token, @RequestBody @Valid CreatePostRequest createPostRequest) {
         try {
-            CreatePostResponse createdPost = postService.createPost(createPostRequest, userDetails.getUsername());
-
+            // Lấy JWT token từ header
+            String userId = jwtConfig.getUserIdFromJWT(token.split(" ")[1]);
+            UserDetails userDetails = userDetailServiceImp.loadUserByUsername(userId);
             // Trả về response nếu tạo bài đăng thành công
-            return ResponseEntity.ok(new Response<>("Tạo bài đăng thành công", createdPost, HttpStatus.OK.value()));
-
-        } catch (DataNotFoundException e) {
-            // Trả về lỗi nếu không tìm thấy người dùng
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new Response<>(e.getMessage(), null, HttpStatus.NOT_FOUND.value()));
-        } catch (RuntimeException e) {
-            // Trả về lỗi server nếu có sự cố bất ngờ
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new Response<>(e.getMessage(), null, HttpStatus.INTERNAL_SERVER_ERROR.value()));
+            return BaseResponse.successData(postService.createPost(createPostRequest, userDetails.getUsername()));
         } catch (Exception e) {
             // Trả về lỗi chung
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

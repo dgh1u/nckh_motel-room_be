@@ -1,6 +1,5 @@
 package com.nckh.motelroom.dto.request.accommodation;
 
-import com.nckh.motelroom.model.enums.ToiletName;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -29,43 +28,31 @@ public class CreateAccommodationRequest {
 
     // Có mạng hay không? (bắt buộc)
     @NotNull(message = "Thông tin về internet là bắt buộc")
-    private boolean internet;
+    private Boolean internet;
 
     // Có chỗ để xe không? (bắt buộc)
     @NotNull(message = "Thông tin về chỗ để xe là bắt buộc")
-    private boolean parking;
+    private Boolean parking;
 
     // Có điều hòa không (bắt buộc)
     @NotNull(message = "Thông tin về điều hòa là bắt buộc")
-    private boolean airConditioner;
+    private Boolean airConditioner;
 
     // Lò sưởi? (bắt buộc)
     @NotNull(message = "Thông tin về lò sưởi là bắt buộc")
-    private boolean heater;
-
-    // Truyền hình cáp? (bắt buộc)
-    @NotNull(message = "Thông tin về truyền hình cáp là bắt buộc")
-    private boolean cableTV;
-
-    // Có TV không? (bắt buộc)
-    @NotNull(message = "Thông tin về TV là bắt buộc")
-    private boolean tv;
+    private Boolean heater;
 
     // Dạng Toilet? Khép kín hay chung? (bắt buộc)
     @NotNull(message = "Thông tin về loại toilet là bắt buộc")
-    private ToiletName toilet;
+    private Boolean toilet;
 
     // Giá trọ (phải lớn hơn 0)
     @DecimalMin(value = "0.0", inclusive = false, message = "Giá phải lớn hơn 0")
     private BigDecimal price;
 
-    // Trạng thái (bắt buộc)
-    @NotNull(message = "Thông tin về trạng thái là bắt buộc")
-    private boolean status;
-
     // Là nhà trọ? (bắt buộc)
     @NotNull(message = "Thông tin về loại cơ sở lưu trú là bắt buộc")
-    private boolean motel;
+    private Boolean motel;
 
     // Tọa độ X (phải lớn hơn 0)
     @Min(value = 0, message = "Tọa độ X phải lớn hơn hoặc bằng 0")

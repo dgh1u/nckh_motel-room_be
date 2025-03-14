@@ -16,6 +16,7 @@ import com.nckh.motelroom.mapper.UserMapper;
 import com.nckh.motelroom.model.*;
 import com.nckh.motelroom.model.enums.ActionName;
 import com.nckh.motelroom.repository.*;
+import com.nckh.motelroom.repository.custom.CustomPostQuery;
 import com.nckh.motelroom.repository.custom.CustomUserQuery;
 import com.nckh.motelroom.service.PostService;
 import jakarta.transaction.Transactional;
@@ -64,61 +65,18 @@ public class PostServiceImp implements PostService {
 
     private final CommentMapper commentMapper;
 
+    //hold
     @Override
-    public Page<Post> getAllPost(CustomUserQuery.PostFilterParam param, PageRequest pageRequest) {
+        public Page<Post> getAllPost(CustomPostQuery.PostFilterParam param, PageRequest pageRequest) {
         try {
-            Specification<Post> specification = CustomUserQuery.getFilterPost(param);
+            Specification<Post> specification = CustomPostQuery.getFilterPost(param);
             return postRepository.findAll(specification, pageRequest);
         }catch (Exception e){
             throw new DataNotFoundException("Không có bài viết nào được tìm thấy! " + e.getMessage());
         }
     }
 
-    @Override
-    public Page<PostDto> getPostByApproved(boolean bool, int page) {
-        Page<Post> postPage;
-        if (bool) {
-            postPage = postRepository.findAllByApprovedAndNotApprovedAndDel(
-                    true, false,false, PageRequest.of(page, 12, Sort.by("createAt").descending()));
-        }else{
-            postPage = postRepository.findAllByApprovedAndNotApproved(
-                    false, true, PageRequest.of(page, 12, Sort.by("createAt").descending()));
-        }
-        return postPage.map(postMapper::toPostDto);
-    }
-
-    @Override
-    public Page<PostDto> getPostByIdUser(long idUser, int page) {
-        // Kiểm tra nếu page hợp lệ (nếu page < 0, trả về page 0)
-        if (page < 0) {
-            page = 0; // Điều chỉnh về trang đầu tiên nếu truyền page < 0
-        }
-
-        Optional<User> userOptional = userRepository.findById(idUser);
-        if (userOptional.isPresent()) {
-            // Lấy danh sách bài đăng của người dùng với phân trang
-            Page<Post> posts = postRepository.findByUser(userOptional.get(),
-                    PageRequest.of(page, 12, Sort.by("createAt").descending()));
-
-            // Chuyển đổi sang PostDto
-            return posts.map(postMapper::toPostDto);
-        } else {
-            // Ném exception nếu không tìm thấy người dùng
-            throw new DataNotFoundException("Không tìm thấy người dùng với id " + idUser);
-        }
-    }
-
-
-    @Override
-    public Page<PostDto> getPostByUserEmail(String email, Pageable page) {
-        Optional<User> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isPresent()) {
-            return postRepository.findAllByUser_EmailAndDelAndApproved(email, false, true , page).map(postMapper::toPostDto);
-        }else{
-            throw new DataNotFoundException("I can't found any User_id like " + email);
-        }
-    }
-
+    //hold
     @Override
     public PostDto getPostById(Long id) {
         // Tìm bài viết
@@ -127,27 +85,22 @@ public class PostServiceImp implements PostService {
         // Kiểm tra xem bài viết có tồn tại không
         if(post.isPresent()) {
             PostDto postDto = postMapper.toPostDto(post.get());
-
             //Lay cho o ra
             AccomodationDto accomodationDto = accommodationMapper.toAccomodationDto(post.get().getAccomodation());
-
             // Lấy các bình luận của bài đăng
             List<CommentDto> commentDtos = new ArrayList<>();
             List<Comment> comments = commentRepository.findCommentsByPostId(id);
             for (Comment comment : comments) {
                 commentDtos.add(commentMapper.toCommentDto(comment));
             }
-
             // Lấy hình ảnh của bài đăng
             List<String> images = imageServiceImpl.getImagesByPost(id);
-
             // Thiết lập dữ liệu cho DTO
             postDto.setAccomodationDTO(accomodationDto);
             postDto.setImageStrings(images);
             postDto.setCommentDTOS(commentDtos);
             postDto.setUserDTO(userMapper.toUserDto(post.get().getUser()));
             postDto.getUserDTO().setB64(null);  // Loại bỏ b64 nếu không cần thiết
-
             // Trả về thông tin bài viết
             return postDto;
         } else {
@@ -156,44 +109,12 @@ public class PostServiceImp implements PostService {
         }
     }
 
-
-//    @Override
-//    @Transactional
-//    public PostDto createPost(CreatePostRequest createPostRequest, String email) {
-//        try{
-//            Optional<User> user = userRepository.findByEmail(email);
-//            if(user.isPresent()){
-//                //create post
-//                Post post = postMapper.createRequestDtoToPost(createPostRequest);
-//                post.setCreateAt(LocalDateTime.now());
-//                post.setLastUpdate(LocalDateTime.now());
-//                post.setUser(user.get());
-//                post.setDel(false);
-//                post.setApproved(false);
-//                post.setNotApproved(false);
-//                //tao accomodation
-//                Accomodation accomodation = accommodationMapper.toAccomodation(createPostRequest.getAccomodation());
-//                accomodation.setPost(post);
-//                // accômdation lưu tại đây
-//                Accomodation accomodationSaved = accomodationRepository.save(accomodation);
-//                post.setAccomodation(accomodationSaved);
-//                post.setUser(user.get());
-//                Post postSaved = postRepository.save(post);
-//                actionService.createAction(post, user.get(), ActionName.CREATE);
-//                return postMapper.toPostDto(postSaved);
-//            }
-//        } catch (Exception e) {
-//            log.error(e.getMessage());
-//        }
-//        return null;
-//    }
-
     @Override
     @Transactional
     public CreatePostResponse createPost(CreatePostRequest createPostRequest, String email) {
         try {
             Optional<User> user = userRepository.findByEmail(email);
-            if (!user.isPresent()) {
+            if (user.isEmpty()) {
                 throw new DataNotFoundException("User not found with email: " + email);
             }
 
@@ -205,11 +126,9 @@ public class PostServiceImp implements PostService {
             post.setDel(false);  // Đánh dấu bài đăng không bị xóa
             post.setApproved(false);  // Bài đăng chưa được duyệt
             post.setNotApproved(false);  // Bài đăng chưa bị từ chối
-
             // Tạo đối tượng Accomodation
             Accomodation accomodation = accommodationMapper.toAccomodation(createPostRequest.getAccomodation());
             accomodation.setPost(post);
-
             // Lưu Accomodation
             Accomodation accomodationSaved = accomodationRepository.save(accomodation);
             post.setAccomodation(accomodationSaved);
@@ -243,7 +162,7 @@ public class PostServiceImp implements PostService {
             // Lấy Post ra và xử lý
             Optional<Post> postOptional = postRepository.findPostById(id);
             // Tìm District từ request
-            Optional<District> districtOptional = districtRepository.findDistrictById(updatePostRequest.getAccomodation().getIdDistrict());
+            Optional<District> districtOptional = districtRepository.findDistrictById(updatePostRequest.getAccomodation().getDistrict().getId());
 
             // Tạo đối tượng Accomodation từ request
             Accomodation accomodation = accommodationMapper.toAccomodation(updatePostRequest.getAccomodation());
@@ -320,61 +239,6 @@ public class PostServiceImp implements PostService {
         return null;  // Trả về null nếu có lỗi xảy ra
     }
 
-
-    @Override
-    public Page<PostDto> getMotelPost(boolean bool, int page, int sort) {
-        try {
-            // Khai báo Page<Post> để lưu kết quả
-            Page<Post> postPage = null;
-
-            // Kiểm tra điều kiện bool: true là lấy tin nhà trọ, false là lấy tin nhà nguyên căn
-            boolean isMotel = bool;
-
-            // Xử lý phân trang và sắp xếp
-            Pageable pageable = PageRequest.of(page, 10);
-
-            // Kiểm tra các loại sắp xếp
-            switch (sort) {
-                case 1: // Sắp xếp theo giá (ascending)
-                    pageable = PageRequest.of(page, 10, Sort.by("accomodation.price").ascending());
-                    break;
-                case 2: // Sắp xếp theo giá (descending)
-                    pageable = PageRequest.of(page, 10, Sort.by("accomodation.price").descending());
-                    break;
-                case 3: // Sắp xếp theo diện tích (ascending)
-                    pageable = PageRequest.of(page, 10, Sort.by("accomodation.acreage").ascending());
-                    break;
-                case 4: // Sắp xếp theo diện tích (descending)
-                    pageable = PageRequest.of(page, 10, Sort.by("accomodation.acreage").descending());
-                    break;
-                case 5: // Sắp xếp theo ngày tạo (descending)
-                    pageable = PageRequest.of(page, 10, Sort.by("createAt").descending());
-                    break;
-                default:
-                    // Nếu sort không hợp lệ, mặc định sẽ không sắp xếp
-                    break;
-            }
-
-            // Lấy bài đăng từ repository
-            if (isMotel) { // Nhà trọ
-                postPage = postRepository.findAllByApprovedAndNotApprovedAndAccomodation_MotelAndDel(
-                        true, false, true, pageable, false);
-            } else { // Nhà nguyên căn
-                postPage = postRepository.findAllByApprovedAndNotApprovedAndAccomodation_MotelAndDel(
-                        true, false, false, pageable, false);
-            }
-
-            // Chuyển đổi sang PostDto và trả về
-            return postPage.map(postMapper::toPostDto);
-        } catch (Exception e) {
-            log.error("Error while getting motel or house posts", e);
-        }
-
-        // Trả về null nếu có lỗi
-        return null;
-    }
-
-
     @Override
     public String deletePostByAdmin(Long id) {
         try {
@@ -431,32 +295,6 @@ public class PostServiceImp implements PostService {
 
     }
 
-    @Override
-    public Page<PostDto> searchPost(SearchDto searchDto, int page, int sort) {
-//        try {
-//            Specification<Post> spec = new PostSpecification(searchForm);
-//            Page<Post> postPage = null;
-//            if (sort == 1)
-//                postPage = postRepository.findAll(spec, PageRequest.of(page, 10, Sort.by("accomodation.price").ascending()));
-//            if (sort == 2)
-//                postPage = postRepository.findAll(spec, PageRequest.of(page, 10, Sort.by("accomodation.price").descending()));
-//            if (sort == 3)
-//                postPage = postRepository.findAll(spec, PageRequest.of(page, 10, Sort.by("accomodation.acreage").ascending()));
-//            if (sort == 4)
-//                postPage = postRepository.findAll(spec, PageRequest.of(page, 10, Sort.by("accomodation.acreage").descending()));
-//            if (sort == 5)
-//                postPage = postRepository.findAll(spec, PageRequest.of(page, 10, Sort.by("createAt").descending()));
-//            Page<PostDTO> postDTOPage = postPage.map(post -> {
-//                PostDTO postDTO = postToPostDTO(post);
-//                return postDTO;
-//            });
-//
-//            return postDTOPage;
-//        } catch (Exception e) {
-//            log.error(e.getMessage());
-//        }
-        return null;
-    }
 
     @Override
     public Page<PostDto> searchPostByMaps(SearchDto searchForm, int page, int sort) {
@@ -465,11 +303,6 @@ public class PostServiceImp implements PostService {
 
     @Override
     public Page<PostDto> getPostWaitingApprove(int page) {
-        // Kiểm tra nếu page hợp lệ (nếu page < 0, trả về page 0)
-        if (page < 0) {
-            page = 0; // Điều chỉnh về trang đầu tiên nếu truyền page < 0
-        }
-
         // Lấy danh sách bài đăng chờ duyệt từ repository với phân trang
         Page<Post> posts = postRepository.findByApprovedFalseAndNotApprovedFalse(
                 PageRequest.of(page, 12, Sort.by("createAt").descending()));
