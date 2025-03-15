@@ -19,7 +19,7 @@ public class CustomPostQuery {
 
     @Data
     @NoArgsConstructor
-    public static class PostFilterParam {
+    public static class PostFilterParam{
         private String title;
         private Boolean approved;
         private Boolean notApproved;

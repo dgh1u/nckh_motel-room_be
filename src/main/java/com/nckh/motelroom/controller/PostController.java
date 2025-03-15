@@ -143,4 +143,36 @@ public class PostController {
         return BaseResponse.successData(postService.deletePostByAdmin(id));
     }
 
+//    //===
+//    @ApiOperation(value = "Lấy danh sách tin đăng đã được duyệt")
+//    @GetMapping("/posts/approved/true")
+//    public Page<?> getAllPostApproved(@RequestParam int page) {
+//        return postService.getPostByApproved(true, page);
+//    }
+//
+//    @ApiOperation(value = "Lấy danh sách tin đăng đã bị khóa")
+//    @GetMapping("/posts/approved/false")
+//    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MODERATOR')")
+//    public Page<PostDTO> getAllPostNotApproved(@RequestParam int page) {
+//        return postService.getPostByApproved(false, page);
+//    }
+//
+//    @ApiOperation(value = "Nếu bool = true lấy danh sách tin nhà trọ, ngược lại lấy danh sách tin nhà nguyên căn")
+//    @GetMapping("/posts/motel/{bool}")
+//    public Page<PostDTO> getMotelPost(@PathVariable boolean bool, @RequestParam int page, @RequestParam int sort) {
+//        return postService.getMotelPost(bool, page, sort);
+//    }
+//
+//    @ApiOperation(value = "Lấy danh sách tin đăng chờ duyệt")
+//    @GetMapping("/posts/waiting")
+//    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MODERATOR')")
+//    public Page<PostDTO> getPostWaitingApprove(@RequestParam int page) {
+//        return postService.getPostWaitingApprove(page);
+//    }
+//
+//    @ApiOperation(value = "Lấy danh sách tin đăng của một người dùng")
+//    @GetMapping("/post/user/{idUser}")
+//    public Page<PostDTO> getPostByIdUser(@PathVariable long idUser, @RequestParam int page, OAuth2Authentication auth) {
+//        return postService.getPostByIdUser(idUser, page, auth);
+//    }
 }

@@ -28,4 +28,5 @@ public interface PostService {
     Page<PostDto> searchPostByMaps(SearchDto searchForm, int page, int sort);
 
     Page<PostDto> getPostWaitingApprove( int page);
+
 }
