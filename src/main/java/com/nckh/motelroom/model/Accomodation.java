@@ -82,4 +82,10 @@ public class Accomodation {
 
     @Column(name = "gender")
     private Boolean gender;
+
+    @Column(name = "kitchen")
+    private Boolean kitchen;
+
+    @Column(name = "security")
+    private Boolean security;
 }

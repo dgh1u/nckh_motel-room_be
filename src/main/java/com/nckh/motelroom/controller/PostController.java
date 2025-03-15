@@ -104,57 +104,43 @@ public class PostController {
     @ApiOperation(value = "Duyệt/Khóa tin đăng")
     @PutMapping("/post/{id}/approve/{bool}")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
-    public ResponseEntity<String> approvePostAndLogging(@RequestHeader("Authorization") String token,
+    public ResponseEntity<?> approvePostAndLogging(@RequestHeader("Authorization") String token,
                                                         @PathVariable Long id,
                                                         @PathVariable boolean bool) {
-        String userId = jwtConfig.getUserIdFromJWT(token.split(" ")[1]);
-        System.out.println("No");
-        String resultMessage = postService.ApprovePost(id, userId, bool);
-        System.out.println("No");
-
-        if (resultMessage == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Không tìm thấy bài đăng với ID " + id);  // Trả về status 404 nếu không tìm thấy bài đăng
+        try {
+            String userId = jwtConfig.getUserIdFromJWT(token.split(" ")[1]);
+            return BaseResponse.successData(postService.ApprovePost(id, userId, bool));  // Trả về status 200 nếu duyệt hoặc khóa thành công
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new Response<>("Lỗi không xác định: " + e.getMessage(), null, HttpStatus.INTERNAL_SERVER_ERROR.value()));
         }
-
-        return ResponseEntity.ok(resultMessage);  // Trả về status 200 nếu duyệt hoặc khóa thành công
     }
 
     // ok
     @ApiOperation(value = "Cập nhật một tin đăng")
-        @PutMapping("/post/{id}")
-        public ResponseEntity<UpdatePostResponse> updatePost(@RequestHeader("Authorization") String token, @PathVariable Long id, @RequestBody UpdatePostRequest updatePostRequest) {
+    @PutMapping("/post/{id}")
+    public ResponseEntity<?> updatePost(@RequestHeader("Authorization") String token, @PathVariable Long id, @RequestBody UpdatePostRequest updatePostRequest) {
+        try {
             String userId = jwtConfig.getUserIdFromJWT(token.split(" ")[1]);
             UpdatePostResponse updatedPost = postService.updatePost(id, updatePostRequest, userId);
-            return ResponseEntity.ok(updatedPost);
+            return BaseResponse.successData(updatedPost);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @ApiOperation(value = "Ẩn một tin đăng")
     @PutMapping("/post/hide/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
-    public ResponseEntity<String> hidePost(@PathVariable Long id) {
-        PostDto postDto = postService.hidePost(id);
-
-        if (postDto == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Không tìm thấy bài đăng với ID " + id);  // Trả về status 404 nếu không tìm thấy bài đăng
-        }
-
-        return ResponseEntity.ok("Bài đăng với ID " + id + " đã được ẩn thành công");  // Trả về status 200 nếu ẩn thành công
+    public ResponseEntity<?> hidePost(@PathVariable Long id) {
+        return BaseResponse.successData(postService.hidePost(id));
     }
 
     @ApiOperation(value = "Xóa một tin đăng")
     @DeleteMapping("/post/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
-    public ResponseEntity<String> deletePostByAdmin(@PathVariable Long id) {
-        String message = postService.deletePostByAdmin(id);
-
-        if (message == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Không tìm thấy bài đăng với ID " + id);  // Trả về status 404 nếu không tìm thấy bài đăng
-        }
-
-        return ResponseEntity.ok(message);  // Trả về status 200 nếu xóa thành công
+    public ResponseEntity<?> deletePostByAdmin(@PathVariable Long id) {
+        return BaseResponse.successData(postService.deletePostByAdmin(id));
     }
 
 }

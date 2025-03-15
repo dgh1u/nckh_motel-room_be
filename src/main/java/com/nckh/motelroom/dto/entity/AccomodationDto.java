@@ -24,5 +24,7 @@ public class AccomodationDto {
     private Double yCoordinate;
     private Boolean gender;
     private DistrictDto district;  // Dùng district thay vì idDistrict
+    private Boolean kitchen;
+    private Boolean security;
 }
 

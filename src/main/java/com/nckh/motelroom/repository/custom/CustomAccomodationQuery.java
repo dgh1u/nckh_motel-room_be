@@ -3,7 +3,9 @@ package com.nckh.motelroom.repository.custom;
 import com.nckh.motelroom.model.Accomodation;
 import com.nckh.motelroom.model.District;
 import com.nckh.motelroom.model.Post;
+import com.nckh.motelroom.utils.CriteriaBuilderUtil;
 import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +21,9 @@ public class CustomAccomodationQuery {
     @Data
     @NoArgsConstructor
     public static class AccomodationFilterParam {
-        private String title;
+        private String keywords;
+        private Double minAcreage;
+        private Double maxAcreage;
         private BigDecimal minPrice;
         private BigDecimal maxPrice;
         private String districtName;
@@ -40,11 +44,16 @@ public class CustomAccomodationQuery {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             Join<Accomodation, District> districtJoin = root.join("district");
+            Join<Accomodation, Post> postJoin = root.join("post", JoinType.LEFT);
 
             // Lọc theo tiêu đề bài đăng
-            if (param.getTitle() != null && !param.getTitle().isEmpty()) {
-                Join<Accomodation, Post> postJoin = root.join("post");
-                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(postJoin.get("title")), "%" + param.getTitle().toLowerCase() + "%"));
+            if (param.getKeywords() != null) {
+                predicates.add(CriteriaBuilderUtil.createPredicateForSearchInsensitive(
+                        postJoin, criteriaBuilder, param.getKeywords(), "title"));
+            }
+
+            if (param.getDistrictName() != null && !param.getDistrictName().isEmpty()) {
+                predicates.add(criteriaBuilder.equal(districtJoin.get("name"), param.getDistrictName()));
             }
 
             // Lọc theo khoảng giá
@@ -55,6 +64,16 @@ public class CustomAccomodationQuery {
             } else if (param.getMaxPrice() != null) {
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), param.getMaxPrice()));
             }
+
+            // Lọc theo diện tích
+            if (param.getMinAcreage() != null && param.getMaxAcreage() != null) {
+                predicates.add(criteriaBuilder.between(root.get("acreage"), param.getMinAcreage(), param.getMaxAcreage()));
+            } else if (param.getMinAcreage() != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("acreage"), param.getMinAcreage()));
+            } else if (param.getMaxAcreage() != null) {
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("acreage"), param.getMaxAcreage()));
+            }
+
 
             // Lọc theo khu vực
             if (param.getDistrictName() != null && !param.getDistrictName().isEmpty()) {

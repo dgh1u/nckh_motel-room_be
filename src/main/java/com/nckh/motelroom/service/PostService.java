@@ -4,14 +4,11 @@ import com.nckh.motelroom.dto.entity.PostDto;
 import com.nckh.motelroom.dto.entity.SearchDto;
 import com.nckh.motelroom.dto.request.post.CreatePostRequest;
 import com.nckh.motelroom.dto.request.post.UpdatePostRequest;
-import com.nckh.motelroom.dto.response.post.CreatePostResponse;
-import com.nckh.motelroom.dto.response.post.UpdatePostResponse;
+import com.nckh.motelroom.dto.response.post.*;
 import com.nckh.motelroom.model.Post;
 import com.nckh.motelroom.repository.custom.CustomPostQuery;
-import com.nckh.motelroom.repository.custom.CustomUserQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 public interface PostService {
     Page<Post> getAllPost(CustomPostQuery.PostFilterParam param, PageRequest pageRequest);
@@ -22,15 +19,11 @@ public interface PostService {
 
     UpdatePostResponse updatePost(Long id, UpdatePostRequest updatePostRequest, String name);
 
-    PostDto hidePost(Long id);
+    HiddenPostResponse hidePost(Long id);
 
-    String deletePostByAdmin(Long id);
+    DeletePostResponse deletePostByAdmin(Long id);
 
-    String ApprovePost(Long idPost, String usernameApprove, boolean isApprove);
-
-    PostDto updatePostById(Long id, PostDto postDto);
-
-    void deletePost(Long id);
+    ApprovePostResponse ApprovePost(Long idPost, String usernameApprove, boolean isApprove);
 
     Page<PostDto> searchPostByMaps(SearchDto searchForm, int page, int sort);
 

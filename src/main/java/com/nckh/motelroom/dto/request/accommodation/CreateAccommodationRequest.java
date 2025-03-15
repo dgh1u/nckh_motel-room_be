@@ -50,9 +50,24 @@ public class CreateAccommodationRequest {
     @DecimalMin(value = "0.0", inclusive = false, message = "Giá phải lớn hơn 0")
     private BigDecimal price;
 
-    // Là nhà trọ? (bắt buộc)
+    // Loại hình nhà trọ (bắt buộc)
     @NotNull(message = "Thông tin về loại cơ sở lưu trú là bắt buộc")
-    private Boolean motel;
+    private String motel;
+
+    // Có nội thất không? (bắt buộc)
+    @NotNull(message = "Thông tin về nội thất là bắt buộc")
+    private Boolean interior;
+
+    // Chủ nhà có ở cùng không?
+    @NotNull(message = "Thông tin về chủ nhà ở cùng là bắt buộc")
+    private Boolean owner;
+
+    // Giờ giấc tự do?
+    @NotNull(message = "Thông tin về giờ giấc là bắt buộc")
+    private Boolean time;
+
+    // Giới tính ưu tiên (true: Nam, false: Nữ, null: Không yêu cầu)
+    private Boolean gender;
 
     // Tọa độ X (phải lớn hơn 0)
     @Min(value = 0, message = "Tọa độ X phải lớn hơn hoặc bằng 0")
@@ -65,4 +80,10 @@ public class CreateAccommodationRequest {
     // Mã Quận (không được để trống)
     @NotNull(message = "Mã quận là bắt buộc")
     private Long idDistrict;
+
+    @NotNull(message = "kitchen là bắt buộc")
+    private Boolean kitchen;
+
+    @NotNull(message = "security là bắt buộc")
+    private Boolean security;
 }
