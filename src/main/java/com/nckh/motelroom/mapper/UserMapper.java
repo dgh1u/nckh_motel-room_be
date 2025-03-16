@@ -23,6 +23,6 @@ public interface UserMapper {
     @Mapping(target = "role",ignore = true)
     User toCreateUser(CreateUserRequest userRequest);
 
-    @Mapping(target = "role",ignore = true)
+    //@Mapping(target = "role",ignore = true)
     UserDto toUserDto(User user);
 }
