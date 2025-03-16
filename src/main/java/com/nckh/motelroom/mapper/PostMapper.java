@@ -1,17 +1,30 @@
 package com.nckh.motelroom.mapper;
 
+import com.nckh.motelroom.dto.entity.CommentDto;
 import com.nckh.motelroom.dto.entity.PostDto;
 import com.nckh.motelroom.dto.request.post.CreatePostRequest;
 import com.nckh.motelroom.dto.response.post.CreatePostResponse;
 import com.nckh.motelroom.dto.response.post.UpdatePostResponse;
+import com.nckh.motelroom.model.Comment;
 import com.nckh.motelroom.model.Post;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
 
-@Mapper(componentModel = "spring", uses = {UserMapper.class, AccommodationMapper.class})
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Mapper(componentModel = "spring", uses = {UserMapper.class, AccommodationMapper.class, CommentMapper.class})
 public interface PostMapper {
+
+    @Mapping(target = "userDTO", source = "user")
+    @Mapping(target = "accomodationDTO", source = "accomodation")
+//    @Mapping(target = "commentDTOS", source = "comments")
+//    @Mapping(target = "imageStrings", expression = "java(post.getImages() != null ? post.getImages().stream().map(Image::getUrl).collect(Collectors.toList()) : Collections.emptyList())")
     PostDto toPostDto(Post post);
+
     Post toPost(PostDto postDto);
 
     // Chuyển đổi từ CreatePostRequest sang Post
@@ -34,6 +47,4 @@ public interface PostMapper {
     @Mapping(target = "createAt", source = "post.createAt")  // Ánh xạ createAt
     @Mapping(target = "lastUpdate", source = "post.lastUpdate")  // Ánh xạ lastUpdate
     CreatePostResponse toCreatePostResponse(Post post);
-
-
 }

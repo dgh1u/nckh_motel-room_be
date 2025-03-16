@@ -96,9 +96,7 @@ public class UserServiceImp implements UserService {
         if (!userOptional.isPresent()) {
             throw new DataExistException("Người dùng không tồn tại");
         }
-        if(request.getEmail().equals(userOptional.get().getEmail())){
-            throw new DataExistException("Email đã tồn tại");
-        }
+
         try {
             User user = userMapper.toUpdateUser(request);
             user.setRole(buildRole(request.getRoleId()));

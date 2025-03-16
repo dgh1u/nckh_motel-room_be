@@ -21,5 +21,5 @@ public class CommentDto implements Serializable {
 
     private UserDto userDTO;
 
-    private long rate;
+    private Long rate;
 }

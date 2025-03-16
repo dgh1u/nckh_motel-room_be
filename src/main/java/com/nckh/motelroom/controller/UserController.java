@@ -42,16 +42,16 @@ public class UserController {
                 .collect(Collectors.toList()), (int) page.getTotalElements());
     }
 
-    @ApiOperation(value = "Lấy avatar của một tài khoản")
-    @GetMapping("/{id}/avatar")
-    @PreAuthorize("#oauth2.hasAnyScope('read')") // for authenticated request (logged)
-    public ResponseEntity<?> getAvatar(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(new AbstractMap.SimpleEntry<>("data", userService.selectUserById(id).getB64()));
-    }
+        @ApiOperation(value = "Lấy avatar của một tài khoản")
+        @GetMapping("/{id}/avatar")
+        //@PreAuthorize("#oauth2.hasAnyScope('read')") // for authenticated request (logged)
+        public ResponseEntity<?> getAvatar(@PathVariable("id") Long id) {
+            return ResponseEntity.ok(new AbstractMap.SimpleEntry<>("data", userService.selectUserById(id).getB64()));
+        }
 
     @ApiOperation(value = "Lấy thông tin của một tài khoản")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ADMIN' , 'EMPLOYEE')")
+
     public ResponseEntity<?> getUser(@PathVariable("id") Long id) {
         return ResponseEntity.ok(userService.selectUserById(id));
     }
@@ -65,7 +65,7 @@ public class UserController {
 
     @ApiOperation(value = "Cập nhật một người dùng")
     @PutMapping("")
-    @PreAuthorize("hasAnyAuthority('ADMIN' , 'EMPLOYEE')")
+
     public ResponseEntity<?> updateUser(@RequestBody UpdateUserRequest request) {
         return ResponseEntity.ok(userService.updateUser(request));
     }

@@ -12,7 +12,7 @@ import java.time.Instant;
 @Setter
 @Entity
 @Table(name = "criteria")
-public class Criteria {
+public class Criteria { //Tiêu chuẩn
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)

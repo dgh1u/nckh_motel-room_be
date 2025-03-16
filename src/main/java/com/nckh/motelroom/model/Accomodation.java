@@ -1,8 +1,6 @@
 package com.nckh.motelroom.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.nckh.motelroom.model.enums.ToiletName;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,8 +30,8 @@ public class Accomodation {
     @Column(name = "air_conditioner")
     private Boolean airConditioner;
 
-    @Column(name = "cabletv")
-    private Boolean cableTV;
+    @Column(name = "interior")
+    private Boolean interior;
 
     @Column(name = "electric_price")
     private BigDecimal electricPrice;
@@ -45,7 +43,7 @@ public class Accomodation {
     private Boolean internet;
 
     @Column(name = "motel")
-    private Boolean motel;
+    private String motel;
 
     @Column(name = "parking")
     private Boolean parking;
@@ -53,15 +51,14 @@ public class Accomodation {
     @Column(name = "price")
     private BigDecimal price;
 
-    @Column(name = "status")
-    private Boolean status;
+    @Column(name = "owner")
+    private Boolean owner;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "toilet")
-    private ToiletName toilet;
+    private Boolean toilet;
 
-    @Column(name = "tv")
-    private Boolean tv;
+    @Column(name = "time")
+    private Boolean time;
 
     @Column(name = "water_price")
     private BigDecimal waterPrice;
@@ -82,4 +79,13 @@ public class Accomodation {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonBackReference
     private Post post;
+
+    @Column(name = "gender")
+    private Boolean gender;
+
+    @Column(name = "kitchen")
+    private Boolean kitchen;
+
+    @Column(name = "security")
+    private Boolean security;
 }

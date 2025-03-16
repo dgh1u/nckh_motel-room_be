@@ -28,6 +28,4 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
     // Phương thức truy vấn các bài đăng chưa duyệt
     Page<Post> findByApprovedFalseAndNotApprovedFalse(Pageable pageable);
     // Phương thức tìm bài đăng nhà nguyên căn với các điều kiện lọc
-    Page<Post> findAllByApprovedAndNotApprovedAndAccomodation_MotelAndDel(boolean approved, boolean notApproved, boolean motel, Pageable pageable, boolean del);
-
 }

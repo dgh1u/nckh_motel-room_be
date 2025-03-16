@@ -37,4 +37,8 @@ public class Image {
         this.data = data;
         this.post = post;
     }
+
+    public Image() {
+
+    }
 }
