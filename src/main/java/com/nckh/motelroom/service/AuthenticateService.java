@@ -1,5 +1,6 @@
 package com.nckh.motelroom.service;
 
+import com.nckh.motelroom.dto.entity.UserDto;
 import com.nckh.motelroom.dto.request.*;
 import com.nckh.motelroom.dto.response.LoginResponse;
 import com.nckh.motelroom.dto.response.RegisterResponse;
@@ -13,4 +14,6 @@ public interface AuthenticateService {
     String regenerateOTP(RegenerateOtpRequest request);
 
     String forgotPassword(ForgotPasswordRequest request);
+
+    UserDto updateProfile(UpdateProfileRequest request);
 }
