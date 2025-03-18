@@ -97,7 +97,7 @@ public class PostServiceImp implements PostService {
             postDto.setImageStrings(images);
             postDto.setCommentDTOS(commentDtos);
             postDto.setUserDTO(userMapper.toUserDto(post.get().getUser()));
-            postDto.getUserDTO().setB64(null);  // Loại bỏ b64 nếu không cần thiết
+
             // Trả về thông tin bài viết
             return postDto;
         } else {
@@ -105,6 +105,9 @@ public class PostServiceImp implements PostService {
             throw new DataNotFoundException("Không tìm thấy bài viết theo id đã cho");
         }
     }
+
+
+
 
     @Override
     @Transactional
@@ -121,8 +124,8 @@ public class PostServiceImp implements PostService {
             post.setLastUpdate(LocalDateTime.now());
             post.setUser(user.get());
             post.setDel(false);  // Đánh dấu bài đăng không bị xóa
-            post.setApproved(false);  // Bài đăng chưa được duyệt
-            post.setNotApproved(false);  // Bài đăng chưa bị từ chối
+            post.setApproved(true);  // Bài đăng chưa được duyệt
+            post.setNotApproved(true);  // Bài đăng chưa bị từ chối
 
             // Tạo đối tượng Accomodation
             Accomodation accomodation = accommodationMapper.toAccomodation(createPostRequest.getAccomodation());

@@ -38,6 +38,7 @@ public class CustomAccomodationQuery {
         private Boolean time;
         private Boolean security;
         private Boolean gender;
+        private String motel;
     }
 
     public static Specification<Accomodation> getFilterAccomodation(AccomodationFilterParam param) {
@@ -115,6 +116,10 @@ public class CustomAccomodationQuery {
             if (param.getGender() != null) {
                 predicates.add(criteriaBuilder.equal(root.get("gender"), param.getGender()));
             }
+            if (param.getMotel() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("motel"), param.getMotel()));
+            }
+
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };

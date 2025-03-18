@@ -33,6 +33,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -85,7 +86,6 @@ public class PostController {
 
     @ApiOperation(value = "Đăng tin mới")
     @PostMapping("/post")
-    @PreAuthorize("hasAnyAuthority('ADMIN' , 'EMPLOYEE')")
     public ResponseEntity<?> createPost(@RequestHeader("Authorization") String token, @RequestBody @Valid CreatePostRequest createPostRequest) {
         try {
             // Lấy JWT token từ header
@@ -170,9 +170,21 @@ public class PostController {
 //        return postService.getPostWaitingApprove(page);
 //    }
 //
-//    @ApiOperation(value = "Lấy danh sách tin đăng của một người dùng")
-//    @GetMapping("/post/user/{idUser}")
-//    public Page<PostDTO> getPostByIdUser(@PathVariable long idUser, @RequestParam int page, OAuth2Authentication auth) {
-//        return postService.getPostByIdUser(idUser, page, auth);
-//    }
+@ApiOperation(value = "Lấy danh sách tin đăng của một người dùng")
+@GetMapping("/posts/{idUser}")
+public ResponseEntity<?> getPostsByUser(@PathVariable Long idUser, @Valid @ModelAttribute GetPostRequest request) {
+    // Gán idUser vào bộ lọc (đảm bảo GetPostRequest có trường userId hoặc chuyển sang PostFilterParam nếu cần)
+    request.setUserId(idUser);
+
+    // Gọi service với bộ lọc đã thiết lập
+    Page<Post> page = postService.getAllPost(request, PageRequest.of(request.getStart(), request.getLimit()));
+
+    // Chuyển đổi và trả về kết quả
+    List<PostDto> postDtos = page.getContent().stream()
+            .map(postMapper::toPostDto)
+            .collect(Collectors.toList());
+
+    return BaseResponse.successListData(postDtos, (int) page.getTotalElements());
+}
+
 }

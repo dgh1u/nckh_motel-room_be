@@ -1,5 +1,6 @@
 package com.nckh.motelroom.repository.custom;
 
+import com.nckh.motelroom.constant.Constant;
 import com.nckh.motelroom.model.Accomodation;
 import com.nckh.motelroom.model.District;
 import com.nckh.motelroom.model.Post;
@@ -29,7 +30,10 @@ public class CustomPostQuery {
         private LocalDateTime startDate;
         private LocalDateTime endDate;
         private String type;
+        private Boolean del;
         private Long userId;
+        private String sortField;
+        private String sortType;
     }
 
     public static Specification<Post> getFilterPost(PostFilterParam param) {
@@ -47,7 +51,12 @@ public class CustomPostQuery {
                 predicates.add(criteriaBuilder.equal(root.get("approved"), param.getApproved()));
             }
             if (param.getNotApproved() != null) {
-                predicates.add(criteriaBuilder.equal(root.get("not_approved"), param.getNotApproved()));
+                predicates.add(criteriaBuilder.equal(root.get("notApproved"), param.getNotApproved()));
+            }
+
+            // Lọc theo trạng thái hiển thị del
+            if (param.getDel() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("del"), param.getDel()));
             }
 
             // Lọc theo ngày tạo
@@ -66,6 +75,8 @@ public class CustomPostQuery {
                 predicates.add(criteriaBuilder.equal(userJoin.get("id"), param.getUserId()));
             }
 
+
+
             // Nếu có bất kỳ trường lọc của Accomodation nào được set, thực hiện join với Accomodation
             if (param.getMinPrice() != null || param.getMaxPrice() != null ||
                     param.getMinAcreage() != null || param.getMaxAcreage() != null ||
@@ -74,7 +85,7 @@ public class CustomPostQuery {
                     param.getInternet() != null || param.getOwner() != null ||
                     param.getParking() != null || param.getToilet() != null ||
                     param.getTime() != null || param.getSecurity() != null ||
-                    param.getGender() != null ||
+                    param.getGender() != null || param.getMotel() != null ||
                     (param.getDistrictName() != null && !param.getDistrictName().isEmpty()) ||
                     (param.getKeywords() != null && !param.getKeywords().isEmpty())
             ) {
@@ -138,6 +149,9 @@ public class CustomPostQuery {
                 if (param.getGender() != null) {
                     predicates.add(criteriaBuilder.equal(accomodationJoin.get("gender"), param.getGender()));
                 }
+                if (param.getMotel() != null) {
+                    predicates.add(criteriaBuilder.equal(accomodationJoin.get("motel"), param.getMotel()));
+                }
 
                 // Lọc theo districtName
                 if (param.getDistrictName() != null && !param.getDistrictName().isEmpty()) {
@@ -146,6 +160,16 @@ public class CustomPostQuery {
                 }
             }
 
+            if (param.sortField != null && !param.sortField.equals("")) {
+                if (param.sortType.equals(Constant.SortType.DESC) || param.sortType.equals("")) {
+                    query.orderBy(criteriaBuilder.desc(root.get(param.sortField)));
+                }
+                if (param.sortType.equals(Constant.SortType.ASC)) {
+                    query.orderBy(criteriaBuilder.asc(root.get(param.sortField)));
+                }
+            } else {
+                query.orderBy(criteriaBuilder.desc(root.get("id")));
+            }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         });
     }
