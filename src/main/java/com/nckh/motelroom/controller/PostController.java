@@ -129,9 +129,8 @@ public class PostController {
         }
     }
 
-    @ApiOperation(value = "Ẩn một tin đăng")
+    @ApiOperation(value = "Ẩn/Mở khóa một tin đăng")
     @PutMapping("/post/hide/{id}")
-    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> hidePost(@PathVariable Long id) {
         return BaseResponse.successData(postService.hidePost(id));
     }

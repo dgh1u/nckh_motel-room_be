@@ -185,7 +185,6 @@ public class PostServiceImp implements PostService {
             // Cập nhật thông tin Post
             post.setTitle(updatePostRequest.getTitle());
             post.setContent(updatePostRequest.getContent());
-            post.setDel(updatePostRequest.isDel());
             post.setLastUpdate(LocalDateTime.now());
             post.setAccomodation(accomodation);
 
@@ -210,20 +209,22 @@ public class PostServiceImp implements PostService {
             Post post = postRepository.findById(id)
                     .orElseThrow(() -> new DataNotFoundException("Không tìm thấy bài đăng với ID " + id));
 
-            // Đánh dấu bài đăng là bị ẩn
-            post.setDel(true);
+            // Chuyển đổi trạng thái của thuộc tính del (nếu false -> true, nếu true -> false)
+            post.setDel(!post.getDel());
             postRepository.save(post);
 
-            // Trả về response
-            return new HiddenPostResponse(post.getId(), "Bài đăng đã được ẩn thành công.", true);
+            // Tạo thông báo phù hợp dựa trên trạng thái mới của del
+            String statusMessage = post.getDel() ? "Bài đăng đã được ẩn thành công." : "Bài đăng đã được hiển thị thành công.";
+            return new HiddenPostResponse(post.getId(), statusMessage, post.getDel());
         } catch (DataNotFoundException e) {
             log.warn("Không tìm thấy bài đăng với ID: {}", id);
             throw e; // Ném lỗi tiếp để controller xử lý
         } catch (Exception e) {
-            log.error("Lỗi khi ẩn bài đăng ID {}: {}", id, e.getMessage(), e);
-            throw new RuntimeException("Đã xảy ra lỗi khi ẩn bài đăng.");
+            log.error("Lỗi khi ẩn/bật bài đăng ID {}: {}", id, e.getMessage(), e);
+            throw new RuntimeException("Đã xảy ra lỗi khi ẩn/bật bài đăng.");
         }
     }
+
 
     @Override
     public DeletePostResponse deletePostByAdmin(Long id) {

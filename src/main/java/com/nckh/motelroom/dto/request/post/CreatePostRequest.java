@@ -12,10 +12,10 @@ import java.time.LocalDateTime;
 public class CreatePostRequest {
     //Basic information of Post
     @NotNull
-    @Size(min = 3, max = 100)
+    @Size(min = 10, max = 100)
     private String title;
     @NotNull
-    @Size(min = 10, max = 500)
+    @Size(min = 50, max = 500)
     private String content;
     private CreateAccommodationRequest accomodation;
 }
