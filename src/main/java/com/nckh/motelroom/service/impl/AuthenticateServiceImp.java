@@ -73,7 +73,9 @@ public class AuthenticateServiceImp implements AuthenticateService {
                 .collect(Collectors.toList());
 
         return LoginResponse.builder()
+                .id(user.getId())
                 .fullName(user.getFullName())
+                .email(user.getEmail())
                 .token(jwtConfig.generateToken(user))
                 .roles(roles)
                 .build();

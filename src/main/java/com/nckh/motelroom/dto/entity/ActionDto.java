@@ -10,22 +10,24 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
-/**
- * DTO for {@link com.nckh.motelroom.model.Action}
- */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ActionDto implements Serializable {
     private Long id;
 
-    private String username;
+    private String email;
+
+    private String fullName;
 
     private ActionName action;
 
     private String postTitle;
 
     private Long postId;
+
+    private String motel;
 
     @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private LocalDateTime time;
