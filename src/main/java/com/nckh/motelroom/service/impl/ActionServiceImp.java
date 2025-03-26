@@ -18,6 +18,7 @@
     import org.springframework.stereotype.Service;
 
     import java.util.List;
+    import java.util.Optional;
 
     @Service
     @RequiredArgsConstructor
@@ -47,5 +48,17 @@
             }
         }
 
+
+        @Override
+        public void markActionAsRead(Long actionId) {
+            Optional<Action> actionOpt = actionRepository.findById(actionId);
+            if (actionOpt.isPresent()) {
+                Action action = actionOpt.get();
+                action.setIsRead(true);
+                actionRepository.save(action);
+            } else {
+                throw new DataNotFoundException("Không tìm thấy hoạt động với id: " + actionId);
+            }
+        }
 
     }

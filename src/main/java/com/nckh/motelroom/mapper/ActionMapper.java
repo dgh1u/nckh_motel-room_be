@@ -16,6 +16,7 @@ public interface ActionMapper {
     // Tương tự, Post có field title -> map sang postTitle
     @Mapping(target = "postTitle", source = "post.title")
 
+    @Mapping(target = "isRead", source = "isRead")
     // Lấy luôn postId
     @Mapping(target = "postId", source = "post.id")
 

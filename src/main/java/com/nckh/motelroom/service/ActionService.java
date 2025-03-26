@@ -20,4 +20,6 @@ public interface ActionService {
 
     Page<Action> getAction(CustomActionQuery.ActionFilterParam param, PageRequest pageRequest);
 
+    void markActionAsRead(Long actionId);
+
 }

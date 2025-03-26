@@ -29,6 +29,8 @@ public class ActionDto implements Serializable {
 
     private String motel;
 
+    private Boolean isRead;
+
     @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private LocalDateTime time;
 

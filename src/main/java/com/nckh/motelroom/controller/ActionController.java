@@ -41,5 +41,13 @@ public class ActionController {
         return BaseResponse.successListData(data, (int) page.getTotalElements());
 
     }
+
+    @ApiOperation(value = "Thay đổi trạng thái xem của hoạt động")
+    @PutMapping("/{id}/mark-read")
+    public ResponseEntity<?> markActionAsRead(@PathVariable Long id) {
+        actionService.markActionAsRead(id);
+        return BaseResponse.successData("Thông báo đã được đánh dấu là đã đọc");
+    }
+
 }
 
