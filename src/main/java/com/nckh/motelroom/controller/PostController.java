@@ -55,14 +55,6 @@ public class PostController {
         return "Hello World";
     }
 
-    //Đang delay đoạn này vì chưa biết vị trí hoạt động như nào?
-    @ApiOperation(value = "Lấy danh sách tin đăng tìm kiếm xung quanh một vị trí")
-    @GetMapping("/posts/searchbymaps")
-    public Page<PostDto> searchPostMaps(SearchDto searchForm, @RequestParam int page, @RequestParam int sort){
-        searchForm.setPriceStart(searchForm.getPriceStart()*1000000);
-        searchForm.setPriceEnd(searchForm.getPriceEnd()*1000000);
-        return postService.searchPostByMaps(searchForm, page, sort);
-    }
 
     // hoàn thành
     @ApiOperation(value = "Lấy tất cả tin đăng")

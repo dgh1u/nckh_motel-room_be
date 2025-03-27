@@ -9,6 +9,7 @@ import com.nckh.motelroom.service.impl.ActionServiceImp;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,14 +22,15 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/actions")
+@RequiredArgsConstructor
 @Api(value = "Tìm nhà trọ", description = "Xem các hoạt động của website")
 public class ActionController {
 
-    @Autowired
-    private ActionServiceImp actionService;
 
-    @Autowired
-    private ActionMapper actionMapper;
+    private final ActionServiceImp actionService;
+
+
+    private final ActionMapper actionMapper;
 
     @ApiOperation(value = "Lấy một trang các hoạt động")
     @GetMapping
