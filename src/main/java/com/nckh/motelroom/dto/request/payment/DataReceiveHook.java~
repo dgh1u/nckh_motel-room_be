@@ -1,0 +1,2 @@
+package com.nckh.motelroom.dto.request.payment;public class DataReceiveHook {
+}
