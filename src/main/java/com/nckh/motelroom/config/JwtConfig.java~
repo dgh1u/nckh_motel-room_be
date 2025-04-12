@@ -50,7 +50,7 @@ public class JwtConfig {
                 .signWith(key)
                 .id(UUID.randomUUID().toString())
                 .claim("scope", authorities)
-                .claim("userId", user.getId())
+                .claim("id", user.getId())
                 .compact();
     }
 

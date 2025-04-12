@@ -101,6 +101,7 @@ public class AuthenticateServiceImp implements AuthenticateService {
         user.setIsSuperAdmin(false);
         user.setBlock(true);
         user.setPhone(request.getPhone());
+        user.setBalance(0);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         String otp = OtpUtil.generateOtp();

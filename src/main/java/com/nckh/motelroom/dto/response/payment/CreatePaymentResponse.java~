@@ -1,0 +1,2 @@
+package com.nckh.motelroom.dto.response.payment;public class CreatePaymentResponse {
+}
