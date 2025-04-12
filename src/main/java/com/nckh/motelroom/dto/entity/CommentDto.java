@@ -10,12 +10,12 @@ import java.time.LocalDateTime;
  * DTO for {@link com.nckh.motelroom.model.Comment}
  */
 @Data
-public class CommentDto implements Serializable {
+public class CommentDto {
     private long id;
 
     private String content;
 
-    private Instant lastUpdate;
+    private LocalDateTime lastUpdate;
 
     private Long idPost;
 

@@ -88,7 +88,7 @@ public class PostServiceImp implements PostService {
             List<CommentDto> commentDtos = new ArrayList<>();
             List<Comment> comments = commentRepository.findCommentsByPostId(id);
             for (Comment comment : comments) {
-                commentDtos.add(commentMapper.toCommentDto(comment));
+                commentDtos.add(commentMapper.toCommentDTO(comment));
             }
             // Lấy hình ảnh của bài đăng
             List<String> images = imageServiceImpl.getImagesByPost(id);

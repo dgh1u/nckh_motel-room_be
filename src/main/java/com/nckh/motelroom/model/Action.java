@@ -35,6 +35,10 @@ public class Action {
 
     private LocalDateTime time;
 
+    @Column(name = "is_read")
+    private Boolean isRead = false;
+
+
     public Action(Post post, User user, ActionName actionName) {
         this.post = post;
         this.user = user;
