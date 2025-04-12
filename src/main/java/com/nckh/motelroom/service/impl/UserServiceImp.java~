@@ -47,7 +47,6 @@ public class UserServiceImp implements UserService {
             throw new DataExistException("Email không tồn tại");
         }
         User user=userOptional.get();
-        user.setBalance(0);
         return userMapper.toUserDto(user);
     }
 
