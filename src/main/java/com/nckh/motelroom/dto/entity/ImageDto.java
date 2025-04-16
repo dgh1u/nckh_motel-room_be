@@ -15,4 +15,6 @@ public class ImageDto {
     private String Uri;
 
     private Long idPost;
+
+
 }

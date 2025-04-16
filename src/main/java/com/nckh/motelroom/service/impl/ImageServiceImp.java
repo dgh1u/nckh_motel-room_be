@@ -23,7 +23,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class ImageServiceImpl implements ImageService {
+public class ImageServiceImp implements ImageService {
     private final ImageMapper imageMapper;
 
     private final ImageRepository imageRepository;
@@ -31,12 +31,12 @@ public class ImageServiceImpl implements ImageService {
     private final PostRepository postRepository;
 
     @Override
-    public ImageDto uploadImage(Long idPost, MultipartFile file) {
+    public ImageDto uploadFile(Long idPost, MultipartFile file) {
         Optional<Post> post = postRepository.findById(idPost);
         if (post.isPresent()) {
             Image image = storeImage(idPost, file);
             String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                    .path("/api/image")
+                    .path("/api/image/")
                     .path(image.getId())
                     .toUriString();
             return new ImageDto(image.getId(), image.getFileName(), file.getContentType(), fileDownloadUri, idPost);
@@ -61,18 +61,19 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Image getImage(Long idPost) {
-        return imageRepository.findById(idPost).orElseThrow(()->new DataNotFoundException("I can't not found postID " + idPost));
+    public Image getImage(String imageId) {
+        return imageRepository.findById(imageId)
+                .orElseThrow(() -> new DataNotFoundException("Không tim thấy ảnh có id " + imageId));
     }
 
     @Override
-    public List<String> getImagesByPost(Long idPost) {
+    public List<String> getImageByIdPost(Long idPost) {
         List<String> uri = new ArrayList<>();
         Optional<Post> post = postRepository.findById(idPost);
         List<Image> images = imageRepository.findImageByPost(post.get());
         for (Image image : images) {
             uri.add(ServletUriComponentsBuilder.fromCurrentContextPath()
-                    .path("/api/image")
+                    .path("/api/image/")
                     .path(image.getId())
             .toUriString());
         }
@@ -91,7 +92,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public List<ImageDto> getImagesDtoByPost(Long idPost) {
+    public List<ImageDto> getImageDTOByIdPost(Long idPost) {
         Optional<Post> post = postRepository.findById(idPost);
         if (post.isPresent()) {
             List<Image> images = imageRepository.findImageByPost(post.get());

@@ -49,7 +49,7 @@ public class PostServiceImp implements PostService {
 
     private final CommentRepository commentRepository;
 
-    private final ImageServiceImpl imageServiceImpl;
+    private final ImageServiceImp imageServiceImp;
 
     private final ActionServiceImp actionService;
 
@@ -91,7 +91,7 @@ public class PostServiceImp implements PostService {
                 commentDtos.add(commentMapper.toCommentDTO(comment));
             }
             // Lấy hình ảnh của bài đăng
-            List<String> images = imageServiceImpl.getImagesByPost(id);
+            List<String> images = imageServiceImp.getImageByIdPost(id);
             // Thiết lập dữ liệu cho DTO
             postDto.setAccomodationDTO(accomodationDto);
             postDto.setImageStrings(images);

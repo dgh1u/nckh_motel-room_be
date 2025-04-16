@@ -50,7 +50,7 @@ public class User {
     private String fileType;
 
     @Column(name = "balance")
-    private Integer balance;
+    private Integer balance = 0;
 
     @Column(name = "otp")
     private String otp;

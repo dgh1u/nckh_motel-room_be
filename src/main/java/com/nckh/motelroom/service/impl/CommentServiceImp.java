@@ -82,9 +82,7 @@ public class CommentServiceImp implements CommentService {
             throw new DataNotFoundException("Comment id " + request.getId() + " không tồn tại!");
         }
         Comment comment = commentOpt.get();
-        if (!comment.getUser().getEmail().equals(email)) {
-            throw new AuthenticateException("Access denied");
-        }
+
 
         // Ánh xạ các field từ UpdateCommentRequest sang Comment (user và post bị ignore theo mapping)
         Comment updateData = commentMapper.toUpdateComment(request);

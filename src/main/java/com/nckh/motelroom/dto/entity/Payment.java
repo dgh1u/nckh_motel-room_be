@@ -31,5 +31,5 @@ public class Payment {
     private String virtualAccountName;
     private String virtualAccountNumber;
     private String signature;
-    private String email;
+    private Long userId;
 }

@@ -13,32 +13,29 @@ import org.hibernate.annotations.OnDeleteAction;
 @Table(name = "image")
 public class Image {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
 
-    @Column(name = "file_name")
     private String fileName;
 
-    @Column(name = "file_type", length = 50)
     private String fileType;
 
-    @Column(name = "data")
+    @Lob
+    @Column(name = "data", columnDefinition = "LONGBLOB")
     private byte[] data;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "post_id")
     private Post post;
+
+    public Image() {
+    }
 
     public Image(String fileName, String fileType, byte[] data, Post post) {
         this.fileName = fileName;
         this.fileType = fileType;
         this.data = data;
         this.post = post;
-    }
-
-    public Image() {
-
     }
 }

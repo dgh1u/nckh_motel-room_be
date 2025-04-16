@@ -18,6 +18,8 @@ public class UpdateUserRequest {
     @NotBlank(message = "Số điện thoại không được để trống")
     private String phone;
 
+    private Integer balance ;
+
     private boolean block;
 
     private String b64;

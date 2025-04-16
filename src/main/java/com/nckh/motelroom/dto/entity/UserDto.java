@@ -23,4 +23,7 @@ public class UserDto {
     private String fileType;
 
     private RoleDto role;
+
+    private Integer balance;
+
 }

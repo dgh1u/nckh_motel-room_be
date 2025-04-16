@@ -7,15 +7,15 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface ImageService {
-    ImageDto uploadImage(Long idPost, MultipartFile file);
+    ImageDto uploadFile(Long idPost, MultipartFile file);
 
     Image storeImage(Long idPost, MultipartFile file);
 
-    Image getImage(Long idPost);
+    Image getImage(String imageId);
 
-    List<String> getImagesByPost(Long idPost);
+    List<String> getImageByIdPost(Long idPost);
 
     void deleteAllImages(Long idPost);
 
-    List<ImageDto> getImagesDtoByPost(Long idPost);
+    List<ImageDto> getImageDTOByIdPost(Long idPost);
 }

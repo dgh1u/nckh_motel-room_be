@@ -47,7 +47,6 @@ public class UserServiceImp implements UserService {
             throw new DataExistException("Email không tồn tại");
         }
         User user=userOptional.get();
-        user.setBalance(0);
         return userMapper.toUserDto(user);
     }
 
@@ -84,6 +83,7 @@ public class UserServiceImp implements UserService {
             user.setRole(buildRole(request.getRoleId()));
             user.setPassword(passwordEncoder.encode(request.getPassword()));
             user.setBlock(false);
+            user.setBalance(0);
             return userMapper.toUserDto(userRepository.saveAndFlush(user));
         }catch (Exception e){
             throw new MyCustomException("Có lỗi xảy ra trong quá trình thêm người dùng");
