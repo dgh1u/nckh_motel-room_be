@@ -113,48 +113,50 @@ public class PostServiceImp implements PostService {
     @Transactional
     public CreatePostResponse createPost(CreatePostRequest createPostRequest, String email) {
         try {
-            Optional<User> user = userRepository.findByEmail(email);
-            if (user.isEmpty()) {
+            Optional<User> userOptional = userRepository.findByEmail(email);
+            if (userOptional.isEmpty()) {
                 throw new DataNotFoundException("User not found with email: " + email);
             }
+            User user = userOptional.get();
 
-            // Tạo bài đăng
+            // Kiểm tra số dư và trừ đi 2000 nếu đủ
+            if (user.getBalance() < 2000) {
+                throw new DataNotFoundException("Số dư không đủ để đăng bài. Yêu cầu tối thiểu là 2000.");
+            }
+            user.setBalance(user.getBalance() - 2000);
+            userRepository.save(user);
+
+            // Tạo bài đăng mới
             Post post = postMapper.createRequestDtoToPost(createPostRequest);
             post.setCreateAt(LocalDateTime.now());
             post.setLastUpdate(LocalDateTime.now());
-            post.setUser(user.get());
-            post.setDel(false);  // Đánh dấu bài đăng không bị xóa
-            post.setApproved(true);  // Bài đăng chưa được duyệt
-            post.setNotApproved(true);  // Bài đăng chưa bị từ chối
+            post.setUser(user);
+            post.setDel(false);
+            post.setApproved(true);
+            post.setNotApproved(true);
 
-            // Tạo đối tượng Accomodation
+            // Xử lý đối tượng Accomodation liên quan đến bài đăng
             Accomodation accomodation = accommodationMapper.toAccomodation(createPostRequest.getAccomodation());
-            accomodation.setId(null); // Đảm bảo Hibernate hiểu đây là Accomodation mới
-
+            accomodation.setId(null);
             accomodation.setPost(post);
-            // Lưu Accomodation
             Accomodation accomodationSaved = accomodationRepository.save(accomodation);
             post.setAccomodation(accomodationSaved);
-            post.setUser(user.get());
 
-            // Lưu bài đăng
+            // Lưu bài đăng vào database
             Post postSaved = postRepository.save(post);
 
             // Tạo action cho bài đăng
-            actionService.createAction(post, user.get(), ActionName.CREATE);
+            actionService.createAction(post, user, ActionName.CREATE);
 
-            // Trả về response sau khi tạo bài đăng thành công
             return postMapper.toCreatePostResponse(postSaved);
-
         } catch (DataNotFoundException e) {
-            throw e; // Re-throw if the user is not found
+            throw e;
         } catch (Exception e) {
-            // Log exception for debugging purposes
             log.error(e.getMessage());
-            // Throw a general exception or custom exception
             throw new RuntimeException(e);
         }
     }
+
 
 
 
