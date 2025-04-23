@@ -65,6 +65,10 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/image/**").permitAll()
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/api/payment/**").permitAll()
+                .requestMatchers("/api/posts").permitAll()
+                .requestMatchers("/api/post/{id}").permitAll()
+                .requestMatchers("/api/comments").permitAll()
+                .requestMatchers(HttpMethod.GET,"/auth/profile").permitAll()
                 .anyRequest().authenticated()
         );
         http.authenticationProvider(authenticationProvider());

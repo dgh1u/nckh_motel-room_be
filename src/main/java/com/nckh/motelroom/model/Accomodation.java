@@ -63,11 +63,7 @@ public class Accomodation {
     @Column(name = "water_price")
     private BigDecimal waterPrice;
 
-    @Column(name = "x_coordinate")
-    private Double xCoordinate;
 
-    @Column(name = "y_coordinate")
-    private Double yCoordinate;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -88,4 +84,25 @@ public class Accomodation {
 
     @Column(name = "security")
     private Boolean security;
+
+    @Column(name="second_motel")
+    private String secondMotel;
+
+    @Column(name = "open_hours")
+    private String openHours;
+
+    @Column(name="delivery")
+    private Boolean delivery;
+
+    @Column(name="dine_in")
+    private Boolean dineIn;
+
+    @Column(name="take_away")
+    private Boolean takeAway;
+
+    @Column(name="big_space")
+    private Boolean bigSpace;
+
+    @Column(name="link_shopee_food")
+    private String linkShopeeFood;
 }

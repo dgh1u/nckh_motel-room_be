@@ -75,8 +75,6 @@ public class CustomPostQuery {
                 predicates.add(criteriaBuilder.equal(userJoin.get("id"), param.getUserId()));
             }
 
-
-
             // Nếu có bất kỳ trường lọc của Accomodation nào được set, thực hiện join với Accomodation
             if (param.getMinPrice() != null || param.getMaxPrice() != null ||
                     param.getMinAcreage() != null || param.getMaxAcreage() != null ||
@@ -86,6 +84,10 @@ public class CustomPostQuery {
                     param.getParking() != null || param.getToilet() != null ||
                     param.getTime() != null || param.getSecurity() != null ||
                     param.getGender() != null || param.getMotel() != null ||
+                    param.getMotels() != null || // Thêm kiểm tra cho motels
+                    param.getOpenHours() != null || param.getSecondMotel() != null ||
+                    param.getDelivery() != null || param.getDineIn() != null ||
+                    param.getTakeAway() != null || param.getBigSpace() != null ||
                     (param.getDistrictName() != null && !param.getDistrictName().isEmpty()) ||
                     (param.getKeywords() != null && !param.getKeywords().isEmpty())
             ) {
@@ -149,8 +151,38 @@ public class CustomPostQuery {
                 if (param.getGender() != null) {
                     predicates.add(criteriaBuilder.equal(accomodationJoin.get("gender"), param.getGender()));
                 }
-                if (param.getMotel() != null) {
+
+                // Cập nhật xử lý motel - hỗ trợ cả hai phương thức
+                if (param.getMotels() != null && !param.getMotels().isEmpty()) {
+                    // Sử dụng IN khi có nhiều giá trị
+                    predicates.add(accomodationJoin.get("motel").in(param.getMotels()));
+                } else if (param.getMotel() != null) {
+                    // Vẫn giữ phương thức cũ để đảm bảo tương thích ngược
                     predicates.add(criteriaBuilder.equal(accomodationJoin.get("motel"), param.getMotel()));
+                }
+
+                if (param.getOpenHours() != null) {
+                    predicates.add(criteriaBuilder.equal(accomodationJoin.get("openHours"), param.getOpenHours()));
+                }
+
+                if (param.getSecondMotel() != null) {
+                    predicates.add(criteriaBuilder.equal(accomodationJoin.get("secondMotel"), param.getSecondMotel()));
+                }
+
+                if (param.getDelivery() != null) {
+                    predicates.add(criteriaBuilder.equal(accomodationJoin.get("delivery"), param.getDelivery()));
+                }
+
+                if (param.getDineIn() != null) {
+                    predicates.add(criteriaBuilder.equal(accomodationJoin.get("dineIn"), param.getDineIn()));
+                }
+
+                if (param.getTakeAway() != null) {
+                    predicates.add(criteriaBuilder.equal(accomodationJoin.get("takeAway"), param.getTakeAway()));
+                }
+
+                if (param.getBigSpace() != null) {
+                    predicates.add(criteriaBuilder.equal(accomodationJoin.get("bigSpace"), param.getBigSpace()));
                 }
 
                 // Lọc theo districtName

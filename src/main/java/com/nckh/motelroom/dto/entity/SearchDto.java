@@ -16,9 +16,7 @@ public class SearchDto {
 
     private long idDistrict;
 
-    private double xCoordinate;
 
-    private double yCoordinate;
 
     private double radius;
 }

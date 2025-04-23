@@ -20,11 +20,18 @@ public class AccomodationDto {
     private Boolean toilet;
     private Boolean time;
     private BigDecimal waterPrice;
-    private Double xCoordinate;
-    private Double yCoordinate;
+
     private Boolean gender;
     private DistrictDto district;  // Dùng district thay vì idDistrict
     private Boolean kitchen;
     private Boolean security;
+
+    private String openHours;
+    private String secondMotel;
+    private Boolean delivery;
+    private Boolean dineIn;
+    private Boolean takeAway;
+    private Boolean bigSpace;
+    private String linkShopeeFood;
 }
 

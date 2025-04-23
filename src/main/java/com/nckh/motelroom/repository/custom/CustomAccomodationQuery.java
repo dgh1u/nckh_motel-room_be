@@ -39,6 +39,15 @@ public class CustomAccomodationQuery {
         private Boolean security;
         private Boolean gender;
         private String motel;
+        // Thêm mới: danh sách các giá trị motel
+        private List<String> motels;
+
+        private String openHours;
+        private String secondMotel;
+        private Boolean delivery;
+        private Boolean dineIn;
+        private Boolean takeAway;
+        private Boolean bigSpace;
     }
 
     public static Specification<Accomodation> getFilterAccomodation(AccomodationFilterParam param) {
@@ -74,7 +83,6 @@ public class CustomAccomodationQuery {
             } else if (param.getMaxAcreage() != null) {
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("acreage"), param.getMaxAcreage()));
             }
-
 
             // Lọc theo khu vực
             if (param.getDistrictName() != null && !param.getDistrictName().isEmpty()) {
@@ -116,10 +124,38 @@ public class CustomAccomodationQuery {
             if (param.getGender() != null) {
                 predicates.add(criteriaBuilder.equal(root.get("gender"), param.getGender()));
             }
-            if (param.getMotel() != null) {
+
+            // Cập nhật xử lý motel - hỗ trợ cả hai phương thức
+            if (param.getMotels() != null && !param.getMotels().isEmpty()) {
+                // Sử dụng IN khi có nhiều giá trị
+                predicates.add(root.get("motel").in(param.getMotels()));
+            } else if (param.getMotel() != null) {
+                // Vẫn giữ phương thức cũ để đảm bảo tương thích ngược
                 predicates.add(criteriaBuilder.equal(root.get("motel"), param.getMotel()));
             }
 
+            if (param.getSecondMotel() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("secondMotel"), param.getSecondMotel()));
+            }
+            if (param.getOpenHours() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("openHours"), param.getOpenHours()));
+            }
+
+            if (param.getDelivery() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("delivery"), param.getDelivery()));
+            }
+
+            if (param.getDineIn() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("dineIn"), param.getDineIn()));
+            }
+
+            if (param.getTakeAway() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("takeAway"), param.getTakeAway()));
+            }
+
+            if (param.getBigSpace() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("bigSpace"), param.getBigSpace()));
+            }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };

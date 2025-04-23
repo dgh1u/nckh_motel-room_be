@@ -27,23 +27,18 @@ public class CreateAccommodationRequest {
     private BigDecimal waterPrice;
 
     // Có mạng hay không? (bắt buộc)
-    @NotNull(message = "Thông tin về internet là bắt buộc")
     private Boolean internet;
 
     // Có chỗ để xe không? (bắt buộc)
-    @NotNull(message = "Thông tin về chỗ để xe là bắt buộc")
     private Boolean parking;
 
     // Có điều hòa không (bắt buộc)
-    @NotNull(message = "Thông tin về điều hòa là bắt buộc")
     private Boolean airConditioner;
 
-    // Lò sưởi? (bắt buộc)
-    @NotNull(message = "Thông tin về lò sưởi là bắt buộc")
+    // Có bình nóng lạnh? (bắt buộc)
     private Boolean heater;
 
     // Dạng Toilet? Khép kín hay chung? (bắt buộc)
-    @NotNull(message = "Thông tin về loại toilet là bắt buộc")
     private Boolean toilet;
 
     // Giá trọ (phải lớn hơn 0)
@@ -51,39 +46,49 @@ public class CreateAccommodationRequest {
     private BigDecimal price;
 
     // Loại hình nhà trọ (bắt buộc)
-    @NotNull(message = "Thông tin về loại cơ sở lưu trú là bắt buộc")
+    @NotNull(message = "Thông tin về loại hình là bắt buộc")
     private String motel;
 
     // Có nội thất không? (bắt buộc)
-    @NotNull(message = "Thông tin về nội thất là bắt buộc")
     private Boolean interior;
 
     // Chủ nhà có ở cùng không?
-    @NotNull(message = "Thông tin về chủ nhà ở cùng là bắt buộc")
     private Boolean owner;
 
     // Giờ giấc tự do?
-    @NotNull(message = "Thông tin về giờ giấc là bắt buộc")
     private Boolean time;
 
     // Giới tính ưu tiên (true: Nam, false: Nữ, null: Không yêu cầu)
     private Boolean gender;
 
-    // Tọa độ X (phải lớn hơn 0)
-    @Min(value = 0, message = "Tọa độ X phải lớn hơn hoặc bằng 0")
-    private double xCoordinate;
 
-    // Tọa độ Y (phải lớn hơn 0)
-    @Min(value = 0, message = "Tọa độ Y phải lớn hơn hoặc bằng 0")
-    private double yCoordinate;
 
     // Mã Quận (không được để trống)
     @NotNull(message = "Mã quận là bắt buộc")
     private Long idDistrict;
 
-    @NotNull(message = "kitchen là bắt buộc")
     private Boolean kitchen;
 
-    @NotNull(message = "security là bắt buộc")
     private Boolean security;
+
+    // Giờ mở cửa
+    private String openHours;
+
+    // Loại cơ sở lưu trú thứ hai
+    private String secondMotel;
+
+    // Có giao hàng không?
+    private Boolean delivery;
+
+    // Có dịch vụ ăn tại chỗ không?
+    private Boolean dineIn;
+
+    // Có dịch vụ mang đi không?
+    private Boolean takeAway;
+
+    // Có không gian rộng không?
+    private Boolean bigSpace;
+
+    //link ShopeeFood
+    private String linkShopeeFood;
 }

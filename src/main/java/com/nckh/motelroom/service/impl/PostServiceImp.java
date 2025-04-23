@@ -173,16 +173,14 @@ public class PostServiceImp implements PostService {
                     .orElseGet(() -> {
                         District newDistrict = new District();
                         newDistrict.setName("Default District");
-                        newDistrict.setXCoordinate(0.0);
-                        newDistrict.setYCoordinate(0.0);
+
                         return districtRepository.save(newDistrict);
                     });
 
             // Cập nhật thông tin Accomodation
             Accomodation accomodation = accommodationMapper.toAccomodation(updatePostRequest.getAccomodation());
             accomodation.setDistrict(district);
-            accomodation.setXCoordinate(district.getXCoordinate());
-            accomodation.setYCoordinate(district.getYCoordinate());
+
 
             // Cập nhật thông tin Post
             post.setTitle(updatePostRequest.getTitle());

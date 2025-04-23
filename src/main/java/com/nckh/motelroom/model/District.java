@@ -20,11 +20,7 @@ public class District {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "x_coordinate")
-    private Double xCoordinate;
 
-    @Column(name = "y_coordinate")
-    private Double yCoordinate;
 
     @OneToMany(cascade = CascadeType.ALL,
             mappedBy = "district",
