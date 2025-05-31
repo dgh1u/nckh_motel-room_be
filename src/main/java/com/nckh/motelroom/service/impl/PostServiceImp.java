@@ -187,6 +187,8 @@ public class PostServiceImp implements PostService {
             post.setContent(updatePostRequest.getContent());
             post.setLastUpdate(LocalDateTime.now());
             post.setAccomodation(accomodation);
+            post.setApproved(true);
+            post.setNotApproved(true);
 
             // Gán Accomodation vào Post (quan hệ 1-1)
             accomodation.setPost(post);
