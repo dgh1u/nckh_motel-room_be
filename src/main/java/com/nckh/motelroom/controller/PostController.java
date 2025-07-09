@@ -80,13 +80,13 @@ public class PostController {
     @PostMapping("/post")
     public ResponseEntity<?> createPost(@RequestHeader("Authorization") String token, @RequestBody @Valid CreatePostRequest createPostRequest) {
         try {
-            // Lấy JWT token từ header
+
             String userId = jwtConfig.getUserIdFromJWT(token.split(" ")[1]);
             UserDetails userDetails = userDetailServiceImp.loadUserByUsername(userId);
-            // Trả về response nếu tạo bài đăng thành công
+
             return BaseResponse.successData(postService.createPost(createPostRequest, userDetails.getUsername()));
         } catch (Exception e) {
-            // Trả về lỗi chung
+
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new Response<>("Lỗi không xác định: " + e.getMessage(), null, HttpStatus.INTERNAL_SERVER_ERROR.value()));
         }

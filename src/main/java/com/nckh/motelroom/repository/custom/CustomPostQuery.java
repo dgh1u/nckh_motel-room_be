@@ -192,14 +192,29 @@ public class CustomPostQuery {
                 }
             }
 
+            // Xử lý sắp xếp
             if (param.sortField != null && !param.sortField.equals("")) {
-                if (param.sortType.equals(Constant.SortType.DESC) || param.sortType.equals("")) {
-                    query.orderBy(criteriaBuilder.desc(root.get(param.sortField)));
-                }
-                if (param.sortType.equals(Constant.SortType.ASC)) {
-                    query.orderBy(criteriaBuilder.asc(root.get(param.sortField)));
+                if ("price".equals(param.sortField)) {
+                    // Sắp xếp theo giá - cần join với Accomodation nếu chưa join
+                    Join<Post, Accomodation> priceJoin = root.join("accomodation", JoinType.LEFT);
+
+                    if (param.sortType.equals(Constant.SortType.DESC) || param.sortType.equals("")) {
+                        // Giá cao trước (DESC)
+                        query.orderBy(criteriaBuilder.desc(priceJoin.get("price")));
+                    } else if (param.sortType.equals(Constant.SortType.ASC)) {
+                        // Giá thấp trước (ASC)
+                        query.orderBy(criteriaBuilder.asc(priceJoin.get("price")));
+                    }
+                } else {
+                    // Sắp xếp theo các trường khác của Post
+                    if (param.sortType.equals(Constant.SortType.DESC) || param.sortType.equals("")) {
+                        query.orderBy(criteriaBuilder.desc(root.get(param.sortField)));
+                    } else if (param.sortType.equals(Constant.SortType.ASC)) {
+                        query.orderBy(criteriaBuilder.asc(root.get(param.sortField)));
+                    }
                 }
             } else {
+                // Mặc định sắp xếp theo ID giảm dần (tin mới nhất trước)
                 query.orderBy(criteriaBuilder.desc(root.get("id")));
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

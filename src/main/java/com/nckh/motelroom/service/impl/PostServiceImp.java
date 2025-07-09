@@ -106,9 +106,6 @@ public class PostServiceImp implements PostService {
         }
     }
 
-
-
-
     @Override
     @Transactional
     public CreatePostResponse createPost(CreatePostRequest createPostRequest, String email) {
@@ -187,6 +184,8 @@ public class PostServiceImp implements PostService {
             post.setContent(updatePostRequest.getContent());
             post.setLastUpdate(LocalDateTime.now());
             post.setAccomodation(accomodation);
+            post.setApproved(true);
+            post.setNotApproved(true);
 
             // Gán Accomodation vào Post (quan hệ 1-1)
             accomodation.setPost(post);
@@ -262,19 +261,42 @@ public class PostServiceImp implements PostService {
 
             Post post = postOpt.get();
             User user = userOpt.get();
+            User postOwner = post.getUser(); // Chủ bài viết
 
             if (isApprove) {
+                // Duyệt bài viết
                 post.setApproved(true);
                 post.setNotApproved(false);
                 actionService.createAction(post, user, ActionName.APPROVE);
             } else {
+                // Khóa bài viết
+                // Kiểm tra trạng thái hiện tại của bài viết
+                boolean wasWaitingApproval = post.getApproved() && post.getNotApproved(); // Chờ duyệt
+                boolean wasApproved = post.getApproved() && !post.getNotApproved(); // Đã duyệt
+
+                // Cập nhật trạng thái khóa bài
                 post.setApproved(false);
                 post.setNotApproved(true);
+
+                // Hoàn tiền nếu bài viết đang ở trạng thái "Chờ duyệt"
+                if (wasWaitingApproval) {
+                    postOwner.setBalance(postOwner.getBalance() + 2000);
+                    userRepository.save(postOwner);
+                    log.info("Hoàn tiền 2000 cho user ID: {} khi khóa bài viết ID: {} từ trạng thái chờ duyệt",
+                            postOwner.getId(), idPost);
+                }
+
                 actionService.createAction(post, user, ActionName.BLOCK);
             }
 
             postRepository.save(post);
-            return new ApprovePostResponse(idPost, "Bài đăng đã được " + (isApprove ? "duyệt" : "khóa") + " thành công", isApprove);
+
+            String message = "Bài đăng đã được " + (isApprove ? "duyệt" : "khóa") + " thành công";
+            if (!isApprove && post.getApproved() && post.getNotApproved()) {
+                message += " và đã hoàn tiền 2000 cho chủ bài viết";
+            }
+
+            return new ApprovePostResponse(idPost, message, isApprove);
 
         } catch (Exception e) {
             log.error("Lỗi khi duyệt bài đăng: {}", e.getMessage());
