@@ -54,15 +54,17 @@ public class AuthenticateServiceImp implements AuthenticateService {
     public LoginResponse login(LoginRequest request) {
         Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
         if (!userOptional.isPresent()) {
-            throw new AuthenticateException("Email hoặc mật khẩu không chính xác");
+            throw new AuthenticateException("Email không tồn tại");
         }
         User user = userOptional.get();
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new AuthenticateException("Email hoặc mật khẩu không chính xác");
+            throw new AuthenticateException("Mật khẩu không chính xác");
         }
         if (user.getBlock()) {
-            throw new AuthenticateException("Xác thực người dùng");
+            throw new AuthenticateException("Tài khoản bị khóa");
         }
+
+        // Tạo Authentication object
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -72,6 +74,7 @@ public class AuthenticateServiceImp implements AuthenticateService {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
+        // Tạo JWT token và trả về response
         return LoginResponse.builder()
                 .id(user.getId())
                 .fullName(user.getFullName())

@@ -32,13 +32,17 @@ public class ImageServiceImp implements ImageService {
 
     @Override
     public ImageDto uploadFile(Long idPost, MultipartFile file) {
+        // Kiểm tra bài đăng có tồn tại không
         Optional<Post> post = postRepository.findById(idPost);
         if (post.isPresent()) {
+            // Lưu ảnh vào database
             Image image = storeImage(idPost, file);
+            // Tạo link để truy cập ảnh
             String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                     .path("/api/image/")
                     .path(image.getId())
                     .toUriString();
+            // Trả về thông tin ảnh
             return new ImageDto(image.getId(), image.getFileName(), file.getContentType(), fileDownloadUri, idPost);
         }else{
             throw new DataNotFoundException("I can't not found postID " + idPost);
@@ -47,12 +51,16 @@ public class ImageServiceImp implements ImageService {
 
     @Override
     public Image storeImage(Long idPost, MultipartFile file) {
+        // Lấy tên file và validate
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         try{
             if(fileName.contains("..")){
                 throw new DataNotFoundException("I can't found file name in " + fileName);
             }
+            // Tìm bài đăng
             Optional<Post> post = postRepository.findById(idPost);
+
+            // Tạo đối tượng Image và lưu
             Image image = new Image(fileName, file.getContentType(), file.getBytes(), post.get());
             return imageRepository.save(image);
         } catch (Exception e) {
@@ -68,8 +76,11 @@ public class ImageServiceImp implements ImageService {
 
     @Override
     public List<String> getImageByIdPost(Long idPost) {
+        // Tạo danh sách để chứa link ảnh
         List<String> uri = new ArrayList<>();
+        // Tìm bài đăng
         Optional<Post> post = postRepository.findById(idPost);
+        //Tìm tất cả ảnh của bài đăng này
         List<Image> images = imageRepository.findImageByPost(post.get());
         for (Image image : images) {
             uri.add(ServletUriComponentsBuilder.fromCurrentContextPath()

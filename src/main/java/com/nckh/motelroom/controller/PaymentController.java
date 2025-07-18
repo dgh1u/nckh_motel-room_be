@@ -50,7 +50,7 @@ public class PaymentController {
         Object userIdObj = claims.get("userId");
         if (userIdObj != null) {
             Long userId = Long.parseLong(userIdObj.toString());
-            // hoặc Integer.parseInt(...) nếu dùng kiểu int
+
             CheckoutResponseData data =paymentService.createPayment(request,userId);
             String checkoutUrl = data.getCheckoutUrl();
             return ResponseEntity.ok(CreatePaymentResponse.builder().url(checkoutUrl).build());

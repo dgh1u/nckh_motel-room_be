@@ -84,6 +84,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public void receiveHook(PaymentReceiveHookRequest request) {
         try {
+            // Lấy userid
             String description = request.getData().getDescription();
             String[] parts = description.split(" ");
             if (parts.length < 2) {
@@ -96,6 +97,7 @@ public class PaymentServiceImpl implements PaymentService {
                 throw new DataExistException("Không tồn tại người dùng");
             }
             User user = userOptional.get();
+            //Nếu trạng thái = Success thì cộng tiền vòa số dư tài khoản
             if (request.isSuccess()) {
                 Integer price = user.getBalance() + request.getData().getAmount();
                 user.setBalance(price);

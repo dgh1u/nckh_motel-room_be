@@ -42,7 +42,7 @@ public class ImageController {
     public List<ImageDto> uploadMultipleFiles(@PathVariable Long idPost, @RequestParam("files") MultipartFile[] files) {
         return Arrays.asList(files)
                 .stream()
-                .map(file -> uploadFile(idPost, file))
+                .map(file -> uploadFile(idPost, file)) // Gọi uploadFile cho từng ảnh
                 .collect(Collectors.toList());
     }
 

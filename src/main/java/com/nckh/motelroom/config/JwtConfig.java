@@ -44,14 +44,14 @@ public class JwtConfig {
                 .collect(Collectors.joining(","));
 
         return Jwts.builder()
-                .subject(user.getEmail())
-                .issuedAt(issuedAt)
-                .expiration(expiration)
-                .signWith(key)
-                .id(UUID.randomUUID().toString())
-                .claim("scope", authorities)
-                .claim("userId", user.getId())
-                .compact();
+                .subject(user.getEmail()) //Email nguoi dung
+                .issuedAt(issuedAt) //Thoi gian tao
+                .expiration(expiration) //Thoi gian het han
+                .signWith(key) // SecretKey trong .env
+                .id(UUID.randomUUID().toString()) // ID duy nhat cua token
+                .claim("scope", authorities)  //Quyen
+                .claim("userId", user.getId()) //Id cua user
+                .compact(); // Tao Strin JWT
     }
 
     // Lấy thông tin user từ jwt
