@@ -1,9 +1,6 @@
 package com.nckh.motelroom.service.impl;
 
-import com.nckh.motelroom.dto.entity.AccomodationDto;
-import com.nckh.motelroom.dto.entity.CommentDto;
-import com.nckh.motelroom.dto.entity.PostDto;
-import com.nckh.motelroom.dto.entity.SearchDto;
+import com.nckh.motelroom.dto.entity.*;
 import com.nckh.motelroom.dto.request.post.CreatePostRequest;
 import com.nckh.motelroom.dto.request.post.UpdatePostRequest;
 import com.nckh.motelroom.dto.response.post.*;
@@ -51,6 +48,8 @@ public class PostServiceImp implements PostService {
 
     private final ImageServiceImp imageServiceImp;
 
+    private final DocumentServiceImpl documentServiceImpl;
+
     private final ActionServiceImp actionService;
 
  ;   //Some Mapper in this
@@ -92,6 +91,10 @@ public class PostServiceImp implements PostService {
             }
             // Lấy hình ảnh của bài đăng
             List<String> images = imageServiceImp.getImageByIdPost(id);
+
+            List<DocumentDto> documents = documentServiceImpl.getDocumentDTOsByIdPost(id);
+            postDto.setDocuments(documents);
+
             // Thiết lập dữ liệu cho DTO
             postDto.setAccomodationDTO(accomodationDto);
             postDto.setImageStrings(images);

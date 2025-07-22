@@ -32,5 +32,7 @@ public class PostDto {
 
     private List<String> imageStrings;
 
+    private List<DocumentDto> documents;
+
     private String type;
 }

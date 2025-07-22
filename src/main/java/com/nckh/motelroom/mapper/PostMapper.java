@@ -1,6 +1,7 @@
 package com.nckh.motelroom.mapper;
 
 import com.nckh.motelroom.dto.entity.CommentDto;
+import com.nckh.motelroom.dto.entity.DocumentDto;
 import com.nckh.motelroom.dto.entity.PostDto;
 import com.nckh.motelroom.dto.request.post.CreatePostRequest;
 import com.nckh.motelroom.dto.response.post.CreatePostResponse;
@@ -12,18 +13,26 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring", uses = {UserMapper.class, AccommodationMapper.class, CommentMapper.class})
+@Mapper(componentModel = "spring", uses = {UserMapper.class, AccommodationMapper.class, CommentMapper.class, DocumentMapper.class})
 public interface PostMapper {
 
     @Mapping(target = "userDTO", source = "user")
     @Mapping(target = "accomodationDTO", source = "accomodation")
+    @Mapping(target = "documents", expression = "java(getDocumentDtos(post))")
 //    @Mapping(target = "commentDTOS", source = "comments")
 //    @Mapping(target = "imageStrings", expression = "java(post.getImages() != null ? post.getImages().stream().map(Image::getUrl).collect(Collectors.toList()) : Collections.emptyList())")
     PostDto toPostDto(Post post);
+    // Thêm method helper để map documents
+    default List<DocumentDto> getDocumentDtos(Post post) {
+        // Logic để lấy documents sẽ được xử lý trong service layer
+        return new ArrayList<>();
+    }
+
 
     Post toPost(PostDto postDto);
 
