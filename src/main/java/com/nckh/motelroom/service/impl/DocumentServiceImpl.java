@@ -30,7 +30,7 @@ public class DocumentServiceImpl implements DocumentService {
     private final PostRepository postRepository;
 
     // Các định dạng file được phép
-    private static final List<String> ALLOWED_EXTENSIONS = Arrays.asList(".pdf", ".docx", ".ppt", ".pptx");
+    private static final List<String> ALLOWED_EXTENSIONS = Arrays.asList(".pdf", ".docx", ".ppt", ".pptx",".xlsx", ".zip" );
 
     @Override
     public DocumentDto uploadDocument(Long idPost, MultipartFile file) {
@@ -39,7 +39,7 @@ public class DocumentServiceImpl implements DocumentService {
             // Kiểm tra định dạng file
             String fileName = file.getOriginalFilename();
             if (!isValidFileType(fileName)) {
-                throw new MyCustomException("Chỉ cho phép upload file .pdf, .docx, .ppt, .pptx");
+                throw new MyCustomException("Chỉ cho phép upload file .pdf, .docx, .ppt, .pptx, .xlsx ");
             }
 
             Document document = storeDocument(idPost, file);
@@ -77,13 +77,12 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public void deleteAllDocuments(Long idPost) {
-        Optional<Post> post = postRepository.findById(idPost);
-        if (post.isPresent()) {
-            List<Document> documents = documentRepository.findDocumentByPost(post.get());
-            documentRepository.deleteAll(documents);
+    public void deleteSingleDocument(String documentId) {
+        Optional<Document> document = documentRepository.findById(documentId);
+        if (document.isPresent()) {
+            documentRepository.delete(document.get());
         } else {
-            throw new DataNotFoundException("Không tìm thấy bài đăng có ID " + idPost);
+            throw new DataNotFoundException("Không tìm thấy tài liệu có ID " + documentId);
         }
     }
 
@@ -125,5 +124,11 @@ public class DocumentServiceImpl implements DocumentService {
         if (fileName == null) return false;
         String lowerFileName = fileName.toLowerCase();
         return ALLOWED_EXTENSIONS.stream().anyMatch(lowerFileName::endsWith);
+    }
+
+    @Override
+    public Document getDocumentForDownload(String documentId) {
+        return documentRepository.findById(documentId)
+                .orElseThrow(() -> new DataNotFoundException("Không tìm thấy tài liệu có id " + documentId));
     }
 }

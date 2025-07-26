@@ -216,6 +216,7 @@ public class CustomPostQuery {
             } else {
                 // Mặc định sắp xếp theo ID giảm dần (tin mới nhất trước)
                 query.orderBy(criteriaBuilder.desc(root.get("id")));
+                query.orderBy(criteriaBuilder.desc(root.get("id")));
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         });

@@ -35,6 +35,25 @@ public class DocumentController {
         }
     }
 
+    @ApiOperation(value = "Tải tài liệu về máy")
+    @GetMapping("/document/download/{documentId}")
+    public ResponseEntity<ByteArrayResource> downloadDocument(@PathVariable String documentId) {
+        try {
+            Document document = documentService.getDocumentForDownload(documentId);
+
+            ByteArrayResource resource = new ByteArrayResource(document.getData());
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(document.getFileType()))
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            "attachment; filename=\"" + document.getFileName() + "\"")
+                    .contentLength(document.getData().length)
+                    .body(resource);
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
     @ApiOperation(value = "Lấy danh sách tài liệu của bài đăng")
     @GetMapping("/documents/{postId}")
@@ -47,12 +66,12 @@ public class DocumentController {
         }
     }
 
-    @ApiOperation(value = "Xóa tất cả tài liệu của bài đăng")
-    @DeleteMapping("/documents/{postId}")
-    public ResponseEntity<?> deleteAllDocuments(@PathVariable Long postId) {
+    @ApiOperation(value = "Xóa một tài liệu cụ thể")
+    @DeleteMapping("/document/{documentId}")
+    public ResponseEntity<?> deleteSingleDocument(@PathVariable String documentId) {
         try {
-            documentService.deleteAllDocuments(postId);
-            return BaseResponse.successData("Đã xóa tất cả tài liệu");
+            documentService.deleteSingleDocument(documentId);
+            return BaseResponse.successData("Đã xóa tài liệu thành công");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

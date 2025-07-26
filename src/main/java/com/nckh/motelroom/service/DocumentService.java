@@ -11,6 +11,7 @@ public interface DocumentService {
     DocumentDto uploadDocument(Long idPost, MultipartFile file);
     Document getDocument(String documentId);
     List<String> getDocumentsByIdPost(Long idPost);
-    void deleteAllDocuments(Long idPost);
+    void deleteSingleDocument(String documentId);
     List<DocumentDto> getDocumentDTOsByIdPost(Long idPost);
+    Document getDocumentForDownload(String documentId);
 }
