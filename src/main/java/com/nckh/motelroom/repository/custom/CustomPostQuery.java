@@ -185,6 +185,10 @@ public class CustomPostQuery {
                     predicates.add(criteriaBuilder.equal(accomodationJoin.get("bigSpace"), param.getBigSpace()));
                 }
 
+                if (param.getMajor() != null) {
+                    predicates.add(criteriaBuilder.equal(accomodationJoin.get("major"), param.getMajor()));
+                }
+
                 // Lọc theo districtName
                 if (param.getDistrictName() != null && !param.getDistrictName().isEmpty()) {
                     Join<Accomodation, District> districtJoin = accomodationJoin.join("district", JoinType.LEFT);

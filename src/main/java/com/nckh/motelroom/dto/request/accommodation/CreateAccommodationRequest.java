@@ -91,4 +91,12 @@ public class CreateAccommodationRequest {
 
     //link ShopeeFood
     private String linkShopeeFood;
+
+    //Chuyên ngành
+    private String major;
+
+    //Link tham khảo
+    private String referenceUrl;
+
+
 }

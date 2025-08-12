@@ -48,6 +48,7 @@ public class CustomAccomodationQuery {
         private Boolean dineIn;
         private Boolean takeAway;
         private Boolean bigSpace;
+        private String major;
     }
 
     public static Specification<Accomodation> getFilterAccomodation(AccomodationFilterParam param) {
@@ -155,6 +156,9 @@ public class CustomAccomodationQuery {
 
             if (param.getBigSpace() != null) {
                 predicates.add(criteriaBuilder.equal(root.get("bigSpace"), param.getBigSpace()));
+            }
+            if (param.getMajor() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("major"), param.getMajor()));
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

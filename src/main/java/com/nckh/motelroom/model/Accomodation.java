@@ -105,4 +105,10 @@ public class Accomodation {
 
     @Column(name="link_shopee_food")
     private String linkShopeeFood;
+
+    @Column(name="major")
+    private String major;
+
+    @Column(name="reference_url")
+    private String referenceUrl;
 }

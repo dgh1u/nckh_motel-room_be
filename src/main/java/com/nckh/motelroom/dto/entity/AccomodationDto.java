@@ -33,5 +33,8 @@ public class AccomodationDto {
     private Boolean takeAway;
     private Boolean bigSpace;
     private String linkShopeeFood;
+    private String major;
+    private String referenceUrl;
+
 }
 
